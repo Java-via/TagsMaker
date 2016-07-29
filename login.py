@@ -12,10 +12,9 @@ app = Flask(__name__)
 @app.route('/login', methods=["POST", "GET"])
 def register():
     useremail = request.form.get("userEmail", "")
-    username = request.form.get("userName", "")
     userpwd = request.form.get("userPwd", "")
     userlogin(useremail, userpwd)
-    logging.debug(useremail, username, userpwd)
+    logging.debug(useremail, userpwd)
     return jsonify({"msg": "success"})
 
 
@@ -23,7 +22,7 @@ def userlogin(useremail, userpwd):
     try:
         conn = pymysql.connect(host="localhost", user="root", password="123", db="my_db", charset="utf8")
         cur = conn.cursor()
-        cur.execute("INSERT INTO users (userEmail, userName, userPwd) VALUES (%s, %s, %s)", (useremail, username, userpwd))
+        cur.execute("SELECT u_id FROM t_users WHERE u_email = %s AND u_pwd = %s;", useremail, userpwd)
         conn.commit()
     except Exception:
         logging.error("=======")
