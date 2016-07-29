@@ -1,0 +1,16 @@
+.line{
+	margin-top: 20px;
+	border-top: 1px solid #EAEAEA;
+}
+.img-solutions{
+	max-height: 400px;
+}
+.btn-file{
+	max-width: 100px;
+}
+.btn-half{
+	max-width: 60px;
+}
+.xgt img{
+	padding-top: 20px;
+}

@@ -1,0 +1,53 @@
+.art-side{
+	font-size: 16px;
+	background-color: #fff;
+	list-style: none;
+	padding: 0;
+	margin-top: 0;
+	margin-bottom: 40px;
+}
+.art-side a,.art-side a:focus,.art-side a:active,.art-side a:active,.art-side a:visited{
+  color: #444;
+}
+.breadcrumb{
+  font-size: 12px;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 40px;
+}
+.breadcrumb a,.breadcrumb a:focus,.breadcrumb a:active,.breadcrumb a:active,.breadcrumb a:visited{
+  color: #049fbb;
+}
+.art-side .first{
+	border-top: 1px solid #e1e7ee;
+}
+.art-side li{
+	padding: 10px 0;
+	margin: 0 auto;
+	border-bottom: 1px solid #e1e7ee;
+	border-left: 3px solid #fff;
+}
+.art-side a:hover{
+	color: #049fbb;
+	text-decoration:none;
+}
+.breadcrumb a:hover{
+	text-decoration:none;
+}
+.art-side .sel li{
+	color: #049fbb;
+	border-left: 3px solid #049fbb;
+}
+.au-content{
+	text-align: left;
+}
+.plan .au-content p{
+	color: #444;
+	font-size: 16px;
+}
+.plan .au-content p a,.plan .au-content p a:focus,.plan .au-content p a:active,.plan .au-content p a:active,.plan .au-content p a:visited{
+  color: #049fbb;
+}
+.plan .au-content table a,.plan .au-content table a:focus,.plan .au-content table a:active,.plan .au-content table a:active,.plan .au-content table a:visited{
+  color: #049fbb;
+}

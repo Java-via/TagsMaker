@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://v3.bootcss.com/examples/cover/ -->
+<html lang="zh-CN">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/ic.jpg">
+
+    <title>登录</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/cover.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
+        <div class="cover-container">
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <h3 class="masthead-brand">登录</h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li class="active"><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="inner cover">
+                <form class="form-signin" style="padding-left: 30%; width: 70%">
+                    <h2 class="form-signin-heading">请登录</h2>
+                    <label for="userEmail" class="sr-only">注册邮箱</label>
+                    <input type="email" id="userEmail" class="form-control" placeholder="请输入注册邮箱" required="" autofocus="">
+                    <label for="userPwd" class="sr-only">密码</label>
+                    <input type="password" id="userPwd" class="form-control" placeholder="请输入密码" required="">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="remember-me"> 记住我
+                        </label>
+                    </div>
+                    <button  id="login" class="btn btn-sm btn-primary btn-block" style="font-size: large">登录</button>
+                </form>
+            </div>
+
+            <div class="mastfoot">
+                <div class="inner">
+                    <p> by Jessie.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script defer="defer" type="text/javascript">
+        $('#login').
+        click(function() {
+            $.ajax({
+                url : "/login", //请求的url地址
+                dataType : "json", //返回格式为json
+                /* async : true, //请求是否异步，默认为异步，这也是ajax重要特性 */
+                data : {
+                    userEmail : $("input[name='userEmail']").val(),
+                    userPwd : $("input[name='userPwd']").val(),
+                }, //参数值 */
+                type : "POST", //请求方式
+                beforeSend : function() {
+                    //请求前的处理
+                    console.log(data)
+                    if ($("input[name='userEmail']").val() == "") {
+                        alert("注册邮箱不能为空");
+                        return;
+                    } else if ($("input[name='userPwd']").val() == "") {
+                        alert("密码不能为空");
+                        return;
+                    }
+                },
+                success : function(data) {
+                    //请求成功时处理
+                    console.log(data);
+                    var types = data;
+                    if (types.msg.toString() != "successful") {
+                        alert(data.msg.toString())
+                    } else {
+                        alert("登录成功，正在跳转");
+                        window.location.href = "http://zhangjie.com:8090/webtest/login";
+                    }
+                },
+                complete : function() {
+                    //请求完成的处理
+                },
+                error : function(err) {
+                    //请求出错处理
+                    console.log(err);
+                }
+            });
+        });
+
+	</script>
+  
+
+</body></html>
