@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://v3.bootcss.com/examples/cover/ -->
+<html lang="zh-CN">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/ic.jpg">
+
+    <title>贴标签-游戏</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/cover.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
+        <div class="cover-container">
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <h3 class="masthead-brand">贴标签-游戏</h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li class="active"><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2">
+                    <img id="app_img">图标
+                </div>
+
+                <div class="col-md-5 col-md-offset-0.5">
+                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">开心消消乐</a></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    游戏关键词
+                </div>
+                <div class="col-md-5">
+                    关键词1 关键词2 关键词3
+                </div>
+            </div>
+            <div class="col-md-12"></div>
+                <div class="row">
+                    <div class="col-md-2">
+                    游戏描述
+                </div>
+                <div class="col-md-10" id="app_desc">
+                    xiangqing
+                </div>
+            </div>
+
+            <div class="mastfoot">
+                <div class="inner">
+                    <p> by Jessie.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+
+<script defer="defer" type="text/javascript">
+    window.onload = function () {
+        $.ajax({
+            url: "/gameinfo",
+            dataType: "json",
+            async: false,
+            type: "GET",
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                if (data.msg.toString() == "no data") {
+                    alert(data.msg.toString());
+                }else {
+                    var sum = 10;
+//                    for(var i = 0; i < sum; i++){
+                        var app = data.apps[0];
+                        $('#app_name').text(app[1]);
+                        $('#app_desc').text(app[2]);
+                        console.log(app[5]);
+                        $('#app_url').attr("href ", app[5]);
+                        $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
+//                    }
+                }
+            },
+            complete: function () {
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
