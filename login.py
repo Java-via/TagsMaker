@@ -6,16 +6,30 @@ import pymysql
 from flask import Flask, render_template
 from flask import request, jsonify
 
+logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/sig")
+def sig():
+    return render_template("login.html")
+
+
 @app.route('/login', methods=["POST", "GET"])
-def register():
-    useremail = request.form.get("userEmail", "")
-    userpwd = request.form.get("userPwd", "")
-    userlogin(useremail, userpwd)
-    logging.debug(useremail, userpwd)
-    return jsonify({"msg": "success"})
+def login():
+    useremail = request.args.get("user", "")
+    userpwd = request.args.get("userPwd", "")
+    logging.debug("useremail = %s, userpwd = %s", useremail, userpwd)
+    print(userlogin(useremail, userpwd))
+    if userlogin(useremail, userpwd) == "exit":
+        return jsonify({"msg": "success"})
+    else:
+        return jsonify({"msg": "fail"})
 
 
 def userlogin(useremail, userpwd):
@@ -24,6 +38,14 @@ def userlogin(useremail, userpwd):
         cur = conn.cursor()
         cur.execute("SELECT u_id FROM t_users WHERE u_email = %s AND u_pwd = %s;", useremail, userpwd)
         conn.commit()
+        logging.error("fetchall = %s, size = %s", cur.fetchall(), cur.arraysize)
+        if cur.arraysize > 0:
+            return "exit"
+        else:
+            return "not_exit"
     except Exception:
         logging.error("=======")
-    return
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

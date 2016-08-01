@@ -37,7 +37,7 @@
             </div>
 
             <div class="inner cover">
-                <form class="form-signin" style="padding-left: 30%; width: 70%">
+                <form class="form-signin" id="login_form" style="padding-left: 30%; width: 70%">
                     <h2 class="form-signin-heading">请登录</h2>
                     <label for="userEmail" class="sr-only">注册邮箱</label>
                     <input type="email" id="userEmail" class="form-control" placeholder="请输入注册邮箱" required="" autofocus="">
@@ -72,35 +72,38 @@
     <script defer="defer" type="text/javascript">
         $('#login').
         click(function() {
+            {
+                var userEmail = $("input[name='userEmail']").val();
+                var userPwd = $("input[name='userPwd']").val();
+                console.log(userEmail);
+                console.log(userPwd);
+            }
             $.ajax({
-                url : "/login", //请求的url地址
+                url : "./login", //请求的url地址
                 dataType : "json", //返回格式为json
                 /* async : true, //请求是否异步，默认为异步，这也是ajax重要特性 */
-                data : {
-                    userEmail : $("input[name='userEmail']").val(),
-                    userPwd : $("input[name='userPwd']").val(),
-                }, //参数值 */
+                data : userEmail, userPwd,    //参数值
                 type : "POST", //请求方式
                 beforeSend : function() {
                     //请求前的处理
-                    console.log(data)
-                    if ($("input[name='userEmail']").val() == "") {
-                        alert("注册邮箱不能为空");
-                        return;
-                    } else if ($("input[name='userPwd']").val() == "") {
-                        alert("密码不能为空");
-                        return;
-                    }
+                    console.log(user)
+//                    if ($("input[name='userEmail']").val() == "") {
+//                        alert("注册邮箱不能为空");
+//                        return;
+//                    } else if ($("input[name='userPwd']").val() == "") {
+//                        alert("密码不能为空");
+//                        return;
+//                    }
                 },
                 success : function(data) {
                     //请求成功时处理
                     console.log(data);
                     var types = data;
-                    if (types.msg.toString() != "successful") {
+                    if (types.msg.toString() != "success") {
                         alert(data.msg.toString())
                     } else {
                         alert("登录成功，正在跳转");
-                        window.location.href = "http://zhangjie.com:8090/webtest/login";
+//                        window.location.href = "http://zhangjie.com:8090/webtest/login";
                     }
                 },
                 complete : function() {
