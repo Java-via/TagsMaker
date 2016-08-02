@@ -37,29 +37,90 @@
             </div>
 
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-lg-2">
                     <img id="app_img">图标
                 </div>
 
-                <div class="col-md-5 col-md-offset-0.5">
+                <div class="col-lg-5 col-lg-offset-0.5">
                     <div id="app_name" style="font-size: large"><a href="#" id="app_url">开心消消乐</a></div>
+                    <label id="app_pkgname" style="display: block"></label>
                 </div>
             </div>
+
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-lg-2">
                     游戏关键词
                 </div>
-                <div class="col-md-5">
+                <div class="col-lg-5">
                     关键词1 关键词2 关键词3
                 </div>
             </div>
-            <div class="col-md-12"></div>
-                <div class="row">
-                    <div class="col-md-2">
-                    游戏描述
+            <h4>&nbsp;</h4>
+            <div class="row">
+                <div class="col-lg-2">游戏描述
                 </div>
                 <div class="col-md-10" id="app_desc">
                     xiangqing
+                </div>
+            </div>
+
+            <h2>&nbsp;</h2>
+            <div>
+                <form role="form" id="tags">
+                    <div class="form-group col-lg-2">
+                        <label class="label" style="font-size: 15px">
+                            性别偏好
+                        </label>
+                        <select class="form-control" id="sexual">
+                            <option value="man">男</option>
+                            <option value="female">女</option>
+                            <option value="all">无偏向</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-3">
+                        <label class="label" style="font-size: 15px">
+                            年龄偏好
+                        </label>
+                        <select class="form-control" id="age">
+                            <option value="teen">18岁以下</option>
+                            <option value="youth">18-25岁</option>
+                            <option value="old_youth">26-35岁</option>
+                            <option value="earth_mid">35-45岁</option>
+                            <option value="midlife">45-55岁</option>
+                            <option value="old">55岁以上</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-2">
+                        <label class="label" style="font-size: 15px">
+                            婚姻偏好
+                        </label>
+                        <select class="form-control" id="marital">
+                            <option value="unmarried">未婚</option>
+                            <option value="married">已婚</option>
+                            <option value="all">无偏向</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-5">
+                        <label class="label" style="font-size: 15px">
+                            其他偏好
+                        </label>
+                        <select class="form-control" id="other">
+                            <option value="unmarried">未婚</option>
+                            <option value="married">已婚</option>
+                            <option value="all">无偏向</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <h2>&nbsp;</h2>
+
+            <div class="row">
+                <div class="col-lg-5">
+                    <button type="button" id="app_top" class="btn btn-info">上一个</button>
+                </div>
+                <div class="col-lg-2"></div>
+                <div class="col-lg-5">
+                    <button type="button" id="app_next" class="btn btn-info">下一个</button>
                 </div>
             </div>
 
@@ -68,7 +129,6 @@
                     <p> by Jessie.</p>
                 </div>
             </div>
-        </div>
     </div>
 </div>
 
@@ -97,6 +157,7 @@
                     var sum = 10;
 //                    for(var i = 0; i < sum; i++){
                         var app = data.apps[0];
+                        $('#app_pkgname').text(app[0]);
                         $('#app_name').text(app[1]);
                         $('#app_desc').text(app[2]);
                         console.log(app[5]);
@@ -115,5 +176,45 @@
     }
 </script>
 
-</body>
-</html>
+<!--<script defer="defer" type="text/javascript">-->
+    <!--$("#app_top").click = function () {-->
+        <!--$.ajax({-->
+            <!---->
+        <!--})-->
+    <!--}-->
+
+<!--</script>-->
+    <script defer="defer" type="text/javascript">
+        $("#app_next").click(function () {
+            {
+
+            }
+            $.ajax({
+                url : "/gametags",
+                dataType : "json",
+//                async : false,
+                data : {
+                    pkgname : $("#app_pkgname").text(),
+                    sexual : $("#sexual").val(),
+                    age : $("#age").val(),
+                    marital : $("#marital").val(),
+                },
+                type : "GET",
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    alert(data.msg.toString());
+
+                },
+                complete: function () {
+
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        })
+    </script>
+
+</body></html>
