@@ -59,18 +59,13 @@
                     <thead>
                     <tr>
                         <th>序号</th>
+                        <th>邮箱</th>
                         <th>用户名</th>
                         <th>密码</th>
+                        <th>身份</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1,001</td>
-                        <td>Lorem</td>
-                        <td>ipsum</td>
-                        <td>dolor</td>
-                        <td>sit</td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -89,7 +84,7 @@
 <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
 
 <script defer="defer" type="text/javascript">
-    window.onload = function () {
+    $(function () {
         $.ajax({
             url: "/userinfo",
             dataType: "json",
@@ -102,16 +97,21 @@
                 if (data.msg.toString() == "no data") {
                     alert(data.msg.toString());
                 }else {
-                    var sum = 10;
-//                    for(var i = 0; i < sum; i++){
-                        var app = data.apps[0];
-                        $('#app_pkgname').text(app[0]);
-                        $('#app_name').text(app[1]);
-                        $('#app_desc').text(app[2]);
-                        console.log(app[5]);
-                        $('#app_url').attr("href ", app[5]);
-                        $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
-//                    }
+                    var users = data["users"];
+                    for(var i=0; i<users.length; i++) {
+                        var tbody = $("#user_table tbody");
+                        if (users[i][3] == 1) {
+                            users[i][3] = "manager";
+                        } else {
+                            users[i][3] = "not manager";
+                        }
+                        var otr ="<tr><td>" + (i+1) +"</td><td>"
+									+ users[i][0] + "</td><td>"
+									+ users[i][1] + "</td><td>"
+									+ users[i][2] + "</td><td>"
+									+ users[i][3] + "</td></tr>";
+                        tbody.append(otr);
+                    }
                 }
             },
             complete: function () {
@@ -121,7 +121,7 @@
                 console.log(err)
             }
         });
-    }
+    })
 </script>
 
 </body></html>

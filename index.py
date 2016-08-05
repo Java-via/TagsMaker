@@ -16,8 +16,8 @@ SDB_CHARSET = "utf8"
 
 # ----local----
 DB_HOST = "127.0.0.1"
-DB_DB = "my_db"
 DB_APPDB = "app_db"
+DB_DB = "my_db"
 DB_USER = "root"
 DB_PWD = "123"
 DB_CHARSET = "utf8"
@@ -43,7 +43,9 @@ def login():
         logging.debug("user_email = %s, user_pwd = %s", user_email, user_pwd)
 
     logging.debug("userlogin = %s", userlogin(user_email, user_pwd))
-    if userlogin(user_email, user_pwd) == "exit":
+    if userlogin(user_email, user_pwd) == "manager":
+        return jsonify({"msg": "manager"})
+    elif userlogin(user_email, user_pwd) == "exit":
         return jsonify({"msg": "success"})
     else:
         return jsonify({"msg": "fail"})
@@ -52,6 +54,11 @@ def login():
 @app.route("/tagsbegin", methods=["POST", "GET"])
 def tagsbegin():
     return render_template("tagsbegin.html")
+
+
+@app.route("/manager", methods=["POST", "GET"])
+def manager():
+    return render_template("manager.html")
 
 
 @app.route("/tagssoft", methods=["POST", "GET"])
@@ -68,10 +75,12 @@ def userlogin(useremail, userpwd):
     try:
         conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
         cur = conn.cursor()
-        cur.execute("SELECT u_id FROM t_users WHERE u_email = %s AND u_pwd = %s", (useremail, userpwd))
+        cur.execute("SELECT * FROM t_users WHERE u_email = %s AND u_pwd = %s", (useremail, userpwd))
         conn.commit()
-        num = len(cur.fetchall())
-        if num > 0:
+        user = cur.fetchall()
+        if user[0][4] == 1:
+            return "manager"
+        elif len(user) > 0:
             return "exit"
         else:
             return "not_exit"
@@ -112,8 +121,13 @@ def gametags():
         try:
             conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
             cur = conn.cursor()
-            sql = "INSERT INTO t_tags (t_sexual, t_age, t_marital, t_degree) VALUES (%s, %s, %s, %s) " \
-                  "WHERE t_pkgname = %s"
+            sql = "UPDATE t_tags SET t_sexual = %s, t_age = %s, t_marital = %s, t_degree = %s WHERE t_pkgname = %s"
+            if sexual == "man":
+                sexual = "男"
+            elif sexual == "female":
+                sexual = "女"
+            else:
+                sexual = "无偏向"
             cur.execute(sql, (sexual, age, marital, "学士", pkgname))
             conn.commit()
             return jsonify({"msg": "success"})
@@ -132,13 +146,16 @@ def savegametags():
 @app.route("/userinfo", methods=["POST", "GET"])
 def userinfo():
     if request.method == "GET":
-        conn = pymysql.connect(host=DB_DB, user=DB_USER, password=DB_PWD, charset=DB_CHARSET)
+        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
         cur = conn.cursor()
         sql = "SELECT u_email, u_name, u_pwd, u_manager FROM t_users"
         cur.execute(sql)
         user = cur.fetchall()
         if len(user) < 0:
             logging.error("selece users error")
+            return jsonify({"msg": "no data"})
+        else:
+            return jsonify({"msg": "have users", "users": user})
 
 if __name__ == "__main__":
     app.run(debug=True)

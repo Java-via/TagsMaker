@@ -67,47 +67,41 @@
             <h2>&nbsp;</h2>
             <div>
                 <form role="form" id="tags">
-                    <div class="form-group col-lg-2">
-                        <label class="label" style="font-size: 15px">
-                            性别偏好
-                        </label>
-                        <select class="form-control" id="sexual">
-                            <option value="man">男</option>
-                            <option value="female">女</option>
-                            <option value="all">无偏向</option>
-                        </select>
+                    <div class="form-group col-lg-3">
+                    <label class="label" style="font-size: 15px">
+                        性别偏好
+                    </label>
+                    <input type="radio" name="sexual" value="male">男
+                    <input type="radio" name="sexual" value="female">女
+                    <input type="radio" name="sexual" value="all">无偏向
                     </div>
                     <div class="form-group col-lg-3">
-                        <label class="label" style="font-size: 15px">
-                            年龄偏好
-                        </label>
-                        <select class="form-control" id="age">
-                            <option value="teen">18岁以下</option>
-                            <option value="youth">18-25岁</option>
-                            <option value="old_youth">26-35岁</option>
-                            <option value="earth_mid">35-45岁</option>
-                            <option value="midlife">45-55岁</option>
-                            <option value="old">55岁以上</option>
-                        </select>
+                    <label class="label" style="font-size: 15px">
+                        年龄偏好
+                    </label>
+                    <input type="radio" name="age" value="teen">18岁以下
+                    <input type="radio" name="age" value="youth">18-25岁
+                    <input type="radio" name="age" value="old_youth">26-35岁
+                    <input type="radio" name="age" value="earth_mid">35-45岁
+                    <input type="radio" name="age" value="midlife">45-55岁
+                    <input type="radio" name="age" value="old">55岁以上
                     </div>
                     <div class="form-group col-lg-2">
-                        <label class="label" style="font-size: 15px">
-                            婚姻偏好
-                        </label>
-                        <select class="form-control" id="marital">
-                            <option value="unmarried">未婚</option>
-                            <option value="married">已婚</option>
-                            <option value="all">无偏向</option>
-                        </select>
+                    <label class="label" style="font-size: 15px">
+                        婚姻偏好
+                    </label>
+                    <input type="radio" name="marital" value="unmarried">未婚
+                    <input type="radio" name="marital" value="married">已婚
+                    <input type="radio" name="marital" value="all">无偏向
                     </div>
                     <div class="col-lg-5">
                         <label class="label" style="font-size: 15px">
                             其他偏好
                         </label>
                         <select class="form-control" id="other">
-                            <option value="unmarried">未婚</option>
-                            <option value="married">已婚</option>
-                            <option value="all">无偏向</option>
+                            <input type="radio" name="other" value="unmarried">未婚
+                            <input type="radio" name="other" value="married">已婚</option>
+                            <input type="radio" name="other" value="all">无偏向</option>
                         </select>
                     </div>
                 </form>
@@ -176,14 +170,6 @@
     }
 </script>
 
-<!--<script defer="defer" type="text/javascript">-->
-    <!--$("#app_top").click = function () {-->
-        <!--$.ajax({-->
-            <!---->
-        <!--})-->
-    <!--}-->
-
-<!--</script>-->
     <script defer="defer" type="text/javascript">
         $("#app_next").click(function () {
             {
