@@ -43,7 +43,7 @@
 
                 <div class="col-lg-5 col-lg-offset-0.5">
                     <div id="app_name" style="font-size: large"><a href="#" id="app_url">开心消消乐</a></div>
-                    <label id="app_pkgname" style="display: block"></label>
+                    <label id="app_pkgname" style="display: none"></label>
                 </div>
             </div>
 
@@ -51,7 +51,7 @@
                 <div class="col-lg-2">
                     游戏关键词
                 </div>
-                <div class="col-lg-5">
+                <div class="col-lg-5" id="app_tags">
                     关键词1 关键词2 关键词3
                 </div>
             </div>
@@ -65,64 +65,83 @@
             </div>
 
             <h2>&nbsp;</h2>
-            <div>
-                <form role="form" id="tags">
-                    <div class="form-group col-lg-3">
-                    <label class="label" style="font-size: 15px">
-                        性别偏好
-                    </label>
-                    <input type="radio" name="sexual" value="male">男
-                    <input type="radio" name="sexual" value="female">女
-                    <input type="radio" name="sexual" value="all">无偏向
+            <div class="row">
+            <form role="form" id="tags">
+                <div class="row">
+                    <div class="col-lg-2">
                     </div>
-                    <div class="form-group col-lg-3">
-                    <label class="label" style="font-size: 15px">
-                        年龄偏好
-                    </label>
-                    <input type="radio" name="age" value="teen">18岁以下
-                    <input type="radio" name="age" value="youth">18-25岁
-                    <input type="radio" name="age" value="old_youth">26-35岁
-                    <input type="radio" name="age" value="earth_mid">35-45岁
-                    <input type="radio" name="age" value="midlife">45-55岁
-                    <input type="radio" name="age" value="old">55岁以上
-                    </div>
-                    <div class="form-group col-lg-2">
-                    <label class="label" style="font-size: 15px">
-                        婚姻偏好
-                    </label>
-                    <input type="radio" name="marital" value="unmarried">未婚
-                    <input type="radio" name="marital" value="married">已婚
-                    <input type="radio" name="marital" value="all">无偏向
-                    </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-10">
                         <label class="label" style="font-size: 15px">
-                            其他偏好
+                            性别偏好
                         </label>
-                        <select class="form-control" id="other">
-                            <input type="radio" name="other" value="unmarried">未婚
-                            <input type="radio" name="other" value="married">已婚</option>
-                            <input type="radio" name="other" value="all">无偏向</option>
-                        </select>
+                        <input type="radio" name="sexual" value="male">男&nbsp&nbsp
+                        <input type="radio" name="sexual" value="female">女&nbsp&nbsp
+                        <input type="radio" name="sexual" value="all">无偏向
                     </div>
-                </form>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                    </div>
+                    <div class="col-lg-10">
+                        <label class="label" style="font-size: 15px">
+                        婚姻偏好
+                        </label>
+                        <input type="radio" name="marital" value="unmarried">未婚&nbsp
+                        <input type="radio" name="marital" value="married">已婚&nbsp
+                        <input type="radio" name="marital" value="all">无偏向
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label class="label" style="font-size: 15px">
+                            年龄偏好
+                        </label>
+                        <input type="radio" name="age" value="teen">18岁以下&nbsp&nbsp
+                        <input type="radio" name="age" value="youth">18-25岁&nbsp&nbsp
+                        <input type="radio" name="age" value="old_youth">26-35岁&nbsp&nbsp
+                        <input type="radio" name="age" value="earth_mid">36-45岁&nbsp&nbsp
+                        <input type="radio" name="age" value="midlife">45岁以上&nbsp&nbsp
+                        <input type="radio" name="age" value="old">55岁以上&nbsp&nbsp
+                        <input type="radio" name="age" value="all">无偏向
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label class="label" style="font-size: 15px">
+                            学历偏好
+                        </label>
+                        <input type="radio" name="degree" value="middle">小学/初中&nbsp
+                        <input type="radio" name="degree" value="high">中专/高中&nbsp
+                        <input type="radio" name="degree" value="college">大专&nbsp
+                        <input type="radio" name="degree" value="university">本科及以上&nbsp
+                        <input type="radio" name="degree" value="all">无偏向
+                    </div>
+                </div>
+            </form>
             </div>
             <h2>&nbsp;</h2>
-
             <div class="row">
-                <div class="col-lg-5">
-                    <button type="button" id="app_top" class="btn btn-info">上一个</button>
+                <div class="col-lg-4">
+                    <button type="button" id="app_top" class="btn btn-info" style="display: block">上一个</button>
                 </div>
-                <div class="col-lg-2"></div>
-                <div class="col-lg-5">
-                    <button type="button" id="app_next" class="btn btn-info">下一个</button>
+                <!--<div class="col-lg-2"></div>-->
+                <div class="col-lg-4">
+                    <button type="button" id="group_next" class="btn btn-info" style="display: none">下一组</button>
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" id="app_next" class="btn btn-info" style="display: block">下一个</button>
                 </div>
             </div>
-
             <div class="mastfoot">
                 <div class="inner">
                     <p> by Jessie.</p>
                 </div>
             </div>
+        </div>
     </div>
 </div>
 
@@ -135,6 +154,8 @@
 <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
 
 <script defer="defer" type="text/javascript">
+    var index = 0;
+    var apps;
     window.onload = function () {
         $.ajax({
             url: "/gameinfo",
@@ -148,16 +169,15 @@
                 if (data.msg.toString() == "no data") {
                     alert(data.msg.toString());
                 }else {
-                    var sum = 10;
-//                    for(var i = 0; i < sum; i++){
-                        var app = data.apps[0];
-                        $('#app_pkgname').text(app[0]);
-                        $('#app_name').text(app[1]);
-                        $('#app_desc').text(app[2]);
-                        console.log(app[5]);
-                        $('#app_url').attr("href ", app[5]);
-                        $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
-//                    }
+                    apps = data.apps;
+                    var app = apps[index];
+                    $('#app_pkgname').text(app[0]);
+                    $('#app_name').text(app[1]);
+                    $('#app_tags').text(app[3]);
+                    $('#app_desc').text(app[2]);
+                    $('#app_url').attr("href ", app[5]);
+                    $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
+                    index = index + 1;
                 }
             },
             complete: function () {
@@ -170,37 +190,84 @@
     }
 </script>
 
-    <script defer="defer" type="text/javascript">
-        $("#app_next").click(function () {
-            {
+<script defer="defer" type="text/javascript">
+    $("#app_next").click(function () {
+        $.ajax({
+            url : "/gametags",
+            dataType : "json",
+//                async : false,
+            data : {
+                pkgname : $("#app_pkgname").text(),
+                sexual : $("input[name='sexual']:checked").val(),
+                age : $("input[name='age']:checked").val(),
+                marital : $("input[name='marital']:checked").val(),
+                degree : $("input[name='degree']:checked").val(),
+            },
+            type : "GET",
+            beforeSend: function () {
+                if ($("input[name='sexual']:checked").val() == ""
+                        | $("input[name='age']:checked").val() == ""
+                        | $("input[name='age']:checked").val() == ""
+                        | $("input[name='degree']:checked").val() == "") {
+                    alert("还未填写完整，不能提交");
+                    return;
+                }
+            },
+            success: function (data) {
+                alert(data.msg.toString());
+                var app = apps[index];
+                $('#app_pkgname').text(app[0]);
+                $('#app_name').text(app[1]);
+                $('#app_tags').text(app[3]);
+                $('#app_desc').text(app[2]);
+                $('#app_url').attr("href ", app[5]);
+                $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
+
+                index = index + 1;
+                if (index == 10) {
+                    $('#app_next').hide();
+                    $('#group_next').show();
+                }
+
+                $("input[name='sexual']:checked").prop("checked",false);
+                $("input[name='age']:checked").prop("checked",false);
+                $("input[name='marital']:checked").prop("checked",false);
+                $("input[name='degree']:checked").prop("checked",false);
+            },
+            complete: function () {
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+    })
+</script>
+
+<script defer="defer" type="text/javascript">
+    $('#group_next').click(function () {
+        $.ajax( {
+            url : "/gameanonther",
+            dataType : "json",
+            data : {
+
+            },
+            type : "GET",
+            beforeSend : function () {
+
+            },
+            success : function () {
+
+            },
+            complete : function () {
+
+            },
+            error : function () {
 
             }
-            $.ajax({
-                url : "/gametags",
-                dataType : "json",
-//                async : false,
-                data : {
-                    pkgname : $("#app_pkgname").text(),
-                    sexual : $("#sexual").val(),
-                    age : $("#age").val(),
-                    marital : $("#marital").val(),
-                },
-                type : "GET",
-                beforeSend: function () {
+        });
+    })
 
-                },
-                success: function (data) {
-                    alert(data.msg.toString());
-
-                },
-                complete: function () {
-
-                },
-                error: function (err) {
-                    console.log(err)
-                }
-            });
-        })
-    </script>
+</script>
 
 </body></html>
