@@ -38,11 +38,11 @@
 
             <div class="row">
                 <div class="col-lg-2">
-                    <img id="app_img">图标
+                    <img id="app_img" src="#">图标
                 </div>
 
                 <div class="col-lg-5 col-lg-offset-0.5">
-                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">开心消消乐</a></div>
+                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">游戏名称</a></div>
                     <label id="app_pkgname" style="display: none"></label>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 <div class="col-lg-2">游戏描述
                 </div>
                 <div class="col-md-10" id="app_desc">
-                    xiangqing
+                    游戏详情描述
                 </div>
             </div>
 
@@ -126,14 +126,14 @@
             <h2>&nbsp;</h2>
             <div class="row">
                 <div class="col-lg-4">
-                    <button type="button" id="app_top" class="btn btn-info" style="display: block">上一个</button>
+                    <button type="button" id="app_top" class="btn btn-info">上一个</button>
                 </div>
                 <!--<div class="col-lg-2"></div>-->
                 <div class="col-lg-4">
-                    <button type="button" id="group_next" class="btn btn-info" style="display: none">下一组</button>
+                    <button type="button" id="group_next" class="btn btn-info" disabled="disabled">下一组</button>
                 </div>
                 <div class="col-lg-4">
-                    <button type="button" id="app_next" class="btn btn-info" style="display: block">下一个</button>
+                    <button type="button" id="app_next" class="btn btn-info">下一个</button>
                 </div>
             </div>
             <div class="mastfoot">
@@ -192,7 +192,7 @@
 
 <script defer="defer" type="text/javascript">
     $("#app_next").click(function () {
-        $.ajax({
+        var _ajax = $.ajax({
             url : "/gametags",
             dataType : "json",
 //                async : false,
@@ -201,20 +201,22 @@
                 sexual : $("input[name='sexual']:checked").val(),
                 age : $("input[name='age']:checked").val(),
                 marital : $("input[name='marital']:checked").val(),
-                degree : $("input[name='degree']:checked").val(),
+                degree : $("input[name='degree']:checked").val()
             },
             type : "GET",
             beforeSend: function () {
-                if ($("input[name='sexual']:checked").val() == ""
-                        | $("input[name='age']:checked").val() == ""
-                        | $("input[name='age']:checked").val() == ""
-                        | $("input[name='degree']:checked").val() == "") {
+                if ($("input[name='sexual']:checked").length == 0
+                        | $("input[name='age']:checked").length == 0
+                        | $("input[name='age']:checked").length == 0
+                        | $("input[name='degree']:checked").length == 0) {
                     alert("还未填写完整，不能提交");
-                    return;
+                    _ajax.abort();
                 }
             },
             success: function (data) {
-                alert(data.msg.toString());
+                if(data.msg.toString() != "success") {
+                    alert(data.msg.toString());
+                }
                 var app = apps[index];
                 $('#app_pkgname').text(app[0]);
                 $('#app_name').text(app[1]);
@@ -225,8 +227,8 @@
 
                 index = index + 1;
                 if (index == 10) {
-                    $('#app_next').hide();
-                    $('#group_next').show();
+                    $('#app_next').attr("disabled", "disabled");
+                    $('#group_next').removeAttr("disabled");
                 }
 
                 $("input[name='sexual']:checked").prop("checked",false);
@@ -246,18 +248,47 @@
 
 <script defer="defer" type="text/javascript">
     $('#group_next').click(function () {
-        $.ajax( {
-            url : "/gameanonther",
+        var _ajax = $.ajax( {
+            url : "/moregame",
             dataType : "json",
             data : {
-
+                pkgname : $("#app_pkgname").text(),
+                sexual : $("input[name='sexual']:checked").val(),
+                age : $("input[name='age']:checked").val(),
+                marital : $("input[name='marital']:checked").val(),
+                degree : $("input[name='degree']:checked").val(),
+                index : index
             },
             type : "GET",
             beforeSend : function () {
-
+                if ($("input[name='sexual']:checked").length == 0
+                        | $("input[name='age']:checked").length == 0
+                        | $("input[name='age']:checked").length == 0
+                        | $("input[name='degree']:checked").length == 0) {
+                    alert("还未填写完整，不能提交");
+                    _ajax.abort();
+                }
             },
-            success : function () {
+            success : function (data) {
+                index = 0;
+                apps = data.apps;
+                var app = apps[index];
+                $('#app_pkgname').text(app[0]);
+                $('#app_name').text(app[1]);
+                $('#app_tags').text(app[3]);
+                $('#app_desc').text(app[2]);
+                $('#app_url').attr("href ", app[5]);
+                $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
 
+                index = index + 1;
+
+                $("input[name='sexual']:checked").prop("checked",false);
+                $("input[name='age']:checked").prop("checked",false);
+                $("input[name='marital']:checked").prop("checked",false);
+                $("input[name='degree']:checked").prop("checked",false);
+
+                $('#app_next').removeAttr("disabled");
+                $('#group_next').attr("disabled", "disabled");
             },
             complete : function () {
 

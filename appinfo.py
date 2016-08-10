@@ -65,9 +65,9 @@ def save():
         sql_pic_game = "UPDATE t_tags_game SET t_picurl = %s WHERE t_pkgname = %s;"
         for app in apps:
             if app[2] == "soft":
-                cur_l.execute(sql_pic_soft, app[1], app[0])
+                cur_l.execute(sql_pic_soft, (app[1], app[0]))
             else:
-                cur_l.execute(sql_pic_game, app[1], app[0])
+                cur_l.execute(sql_pic_game, (app[1], app[0]))
             conn_l.commit()
         logging.debug("success insert pic")
         return
@@ -75,5 +75,31 @@ def save():
         logging.error(Exception, ":", excep)
         return
 
+
+def savepic():
+    conn = pymysql.connect(host=SDB_HOST, user=SDB_USER, password=SDB_PWD, db=SDB_DB, charset=SDB_CHARSET)
+    cur = conn.cursor()
+    conn_l = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+    cur_l = conn_l.cursor()
+    sql = "SELECT a_pkgname, a_picurl, a_softgame FROM t_apps_additional_united " \
+          "WHERE DATE(a_getdate) = '2016-08-06';"
+    logging.debug("start to select from additional")
+    cur.execute(sql)
+    conn.commit()
+    apps = cur.fetchall()
+    sql_pic_soft = "UPDATE t_tags_soft SET t_picurl = %s WHERE t_pkgname = %s;"
+    sql_pic_game = "UPDATE t_tags_game SET t_picurl = %s WHERE t_pkgname = %s;"
+    logging.debug("start to update")
+    for app in apps:
+        if app[2] == "soft":
+            logging.debug("update soft")
+            cur_l.execute(sql_pic_soft, (app[1], app[0]))
+        else:
+            logging.debug("update game")
+            cur_l.execute(sql_pic_game, (app[1], app[0]))
+        conn_l.commit()
+    return
+
 if __name__ == "__main__":
-    save()
+    savepic()
+

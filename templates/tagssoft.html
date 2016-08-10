@@ -38,11 +38,11 @@
 
             <div class="row">
                 <div class="col-lg-2">
-                    <img id="app_img" src="#">
+                    <img id="app_img" src="#">图标
                 </div>
 
                 <div class="col-lg-5 col-lg-offset-0.5">
-                    <div id="app_name" style="font-size: large"><a href="www.baidu.com" id="app_url">QQ</a></div>
+                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">应用名称</a></div>
                     <label id="app_pkgname" style="display: none"></label>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 <div class="col-lg-2">应用描述
                 </div>
                 <div class="col-md-10" id="app_desc">
-                    详情
+                    应用详情描述
                 </div>
             </div>
 
@@ -125,11 +125,14 @@
             </div>
             <h2>&nbsp;</h2>
             <div class="row">
-                <div class="col-lg-5">
+                <div class="col-lg-4">
                     <button type="button" id="app_top" class="btn btn-info">上一个</button>
                 </div>
-                <div class="col-lg-2"></div>
-                <div class="col-lg-5">
+                <!--<div class="col-lg-2"></div>-->
+                <div class="col-lg-4">
+                    <button type="button" id="group_next" class="btn btn-info" disabled="disabled">下一组</button>
+                </div>
+                <div class="col-lg-4">
                     <button type="button" id="app_next" class="btn btn-info">下一个</button>
                 </div>
             </div>
@@ -222,7 +225,13 @@
                 $('#app_desc').text(app[2]);
                 $('#app_url').attr("href ", app[5]);
                 $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
+
                 index = index + 1;
+                if (index == 10) {
+                    $('#app_next').attr("disabled", "disabled");
+                    $('#group_next').removeAttr("disabled");
+                }
+
                 $("input[name='sexual']:checked").prop("checked",false);
                 $("input[name='age']:checked").prop("checked",false);
                 $("input[name='marital']:checked").prop("checked",false);
@@ -236,6 +245,61 @@
             }
         });
     })
+</script>
+
+<script defer="defer" type="text/javascript">
+    $('#group_next').click(function () {
+        var _ajax = $.ajax( {
+            url : "/moresoft",
+            dataType : "json",
+            data : {
+                pkgname : $("#app_pkgname").text(),
+                sexual : $("input[name='sexual']:checked").val(),
+                age : $("input[name='age']:checked").val(),
+                marital : $("input[name='marital']:checked").val(),
+                degree : $("input[name='degree']:checked").val(),
+                index : index
+            },
+            type : "GET",
+            beforeSend : function () {
+                if ($("input[name='sexual']:checked").length == 0
+                        | $("input[name='age']:checked").length == 0
+                        | $("input[name='age']:checked").length == 0
+                        | $("input[name='degree']:checked").length == 0) {
+                    alert("还未填写完整，不能提交");
+                    _ajax.abort();
+                }
+            },
+            success : function (data) {
+                index = 0;
+                apps = data.apps;
+                var app = apps[index];
+                $('#app_pkgname').text(app[0]);
+                $('#app_name').text(app[1]);
+                $('#app_tags').text(app[3]);
+                $('#app_desc').text(app[2]);
+                $('#app_url').attr("href ", app[5]);
+                $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
+
+                index = index + 1;
+
+                $("input[name='sexual']:checked").prop("checked",false);
+                $("input[name='age']:checked").prop("checked",false);
+                $("input[name='marital']:checked").prop("checked",false);
+                $("input[name='degree']:checked").prop("checked",false);
+
+                $('#app_next').removeAttr("disabled");
+                $('#group_next').attr("disabled", "disabled");
+            },
+            complete : function () {
+
+            },
+            error : function () {
+
+            }
+        });
+    })
+
 </script>
 
 </body></html>

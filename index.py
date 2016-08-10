@@ -135,11 +135,15 @@ def gameinfo():
     :return:
     """
     try:
-        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_APPDB, charset=DB_CHARSET)
+        useremail = request.cookies.get("useremail")
+        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
         cur = conn.cursor()
-        sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url FROM t_apps_basic_united " \
-              "WHERE a_softgame = 'game' LIMIT 10;"
-        cur.execute(sql)
+        sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s"
+        cur.execute(sql_user, useremail)
+        game_end = cur.fetchall()[0][0]
+        sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_id FROM t_tags_game " \
+              "WHERE t_softgame = 'game' AND t_id > %s ORDER BY t_id LIMIT 10;"
+        cur.execute(sql, game_end)
         conn.commit()
         apps = cur.fetchall()
         if len(apps) > 0:
@@ -171,7 +175,7 @@ def gametags():
             cur = conn.cursor()
             sql = "INSERT INTO t_user_tags (u_email, u_pkgname, u_gender, u_age, u_marital, u_degree) " \
                   "VALUES (%s, %s, %s, %s, %s, %s)"
-            if sexual == "man":
+            if sexual == "male":
                 sexual = "男"
             elif sexual == "female":
                 sexual = "女"
@@ -224,12 +228,15 @@ def softinfo():
     :return:
     """
     try:
-        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_APPDB, charset=DB_CHARSET)
+        useremail = request.cookies.get("useremail")
+        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
         cur = conn.cursor()
-        logging.debug("====1====")
-        sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url FROM t_apps_basic_united " \
-              "WHERE a_softgame = 'soft' LIMIT 10;"
-        cur.execute(sql)
+        sql_user = "SELECT u_soft_end FROM t_users WHERE u_email = %s"
+        cur.execute(sql_user, useremail)
+        soft_end = cur.fetchall()[0][0]
+        sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_id FROM t_tags_soft " \
+              "WHERE t_softgame = 'soft' AND t_id > %s ORDER BY t_id LIMIT 10;"
+        cur.execute(sql, soft_end)
         conn.commit()
         apps = cur.fetchall()
         if len(apps) > 0:
@@ -299,6 +306,166 @@ def softtags():
             logging.debug("save : %s, %s, %s, %s, %s, %s", useremail, pkgname, sexual, age, marital, degree)
             conn.commit()
             return jsonify({"msg": "success"})
+        except Exception as excep:
+            logging.error(Exception, ":", excep)
+            return jsonify({"msg": "sql error"})
+    else:
+        logging.error("trans gametags with wrong request method: %s", request.method)
+        return jsonify({"msg": "fail"})
+
+
+@app.route("/moregame", methods=["POST", "GET"])
+def moregame():
+    """
+    get another 10 game apps
+    :return:
+    """
+    if request.method == "GET":
+        index = request.args.get("index")
+        useremail = request.cookies.get("useremail")
+        pkgname = request.args.get("pkgname")
+        sexual = request.args.get("sexual")
+        age = request.args.get("age")
+        marital = request.args.get("marital")
+        degree = request.args.get("degree")
+        logging.debug("useremail = %s, pkgname = %s, sexual = %s, age = %s, marital = %s", useremail, pkgname, sexual,
+                      age, marital)
+        try:
+            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+            cur = conn.cursor()
+            if int(index) == 10:
+                sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
+                           "SET t1.u_game_end = (t0.game_end + 10) WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, useremail))
+                conn.commit()
+            sql_search_end = "SELECT u_game_end FROM t_users WHERE u_email = %s;"
+            cur.execute(sql_search_end, useremail)
+            num = cur.fetchall()[0][0]
+            sql = "INSERT INTO t_user_tags (u_email, u_pkgname, u_gender, u_age, u_marital, u_degree) " \
+                  "VALUES (%s, %s, %s, %s, %s, %s)"
+            if sexual == "male":
+                sexual = "男"
+            elif sexual == "female":
+                sexual = "女"
+            else:
+                sexual = "无偏向"
+            if age == "teen":
+                age = "18岁以下"
+            elif age == "youth":
+                age = "18-25岁"
+            elif age == "old_youth":
+                age = "26-35岁"
+            elif age == "earth_mid":
+                age = "36-45岁"
+            elif age == "midlife":
+                age = "45岁以上"
+            else:
+                age = "无偏向"
+            if marital == "unmarried":
+                marital = "未婚"
+            elif marital == "married":
+                marital = "已婚"
+            else:
+                marital = "无偏向"
+            if degree == "middle":
+                degree = "小学/初中"
+            elif degree == "high":
+                degree = "高中/中专"
+            elif degree == "college":
+                degree = "大专"
+            elif degree == "university":
+                degree = "本科及以上"
+            else:
+                degree = "无偏向"
+            cur.execute(sql, (useremail, pkgname, sexual, age, marital, degree))
+            logging.debug("save : %s, %s, %s, %s, %s, %s", useremail, pkgname, sexual, age, marital, degree)
+            conn.commit()
+            sql_apps = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_id " \
+                       "FROM t_tags_game WHERE t_softgame = 'game' AND t_id > %s ORDER BY t_id LIMIT 10;"
+            cur.execute(sql_apps, num)
+            conn.commit()
+            apps = cur.fetchall()
+            return jsonify({"msg": "success", "apps": apps})
+        except Exception as excep:
+            logging.error(Exception, ":", excep)
+            return jsonify({"msg": "sql error"})
+    else:
+        logging.error("trans gametags with wrong request method: %s", request.method)
+        return jsonify({"msg": "fail"})
+
+
+@app.route("/moresoft", methods=["POST", "GET"])
+def moresoft():
+    """
+    get another 10 soft apps
+    :return:
+    """
+    if request.method == "GET":
+        index = request.args.get("index")
+        useremail = request.cookies.get("useremail")
+        pkgname = request.args.get("pkgname")
+        sexual = request.args.get("sexual")
+        age = request.args.get("age")
+        marital = request.args.get("marital")
+        degree = request.args.get("degree")
+        logging.debug("useremail = %s, pkgname = %s, sexual = %s, age = %s, marital = %s", useremail, pkgname, sexual,
+                      age, marital)
+        try:
+            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+            cur = conn.cursor()
+            if int(index) == 10:
+                sql_end = "UPDATE t_users t1, (SELECT u_soft_end AS soft_end FROM t_users WHERE u_email = %s)t0 " \
+                           "SET t1.u_soft_end = (t0.soft_end + 10) WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, useremail))
+                conn.commit()
+            sql_search_end = "SELECT u_soft_end FROM t_users WHERE u_email = %s;"
+            cur.execute(sql_search_end, useremail)
+            num = cur.fetchall()[0][0]
+            sql = "INSERT INTO t_user_tags (u_email, u_pkgname, u_gender, u_age, u_marital, u_degree) " \
+                  "VALUES (%s, %s, %s, %s, %s, %s)"
+            if sexual == "male":
+                sexual = "男"
+            elif sexual == "female":
+                sexual = "女"
+            else:
+                sexual = "无偏向"
+            if age == "teen":
+                age = "18岁以下"
+            elif age == "youth":
+                age = "18-25岁"
+            elif age == "old_youth":
+                age = "26-35岁"
+            elif age == "earth_mid":
+                age = "36-45岁"
+            elif age == "midlife":
+                age = "45岁以上"
+            else:
+                age = "无偏向"
+            if marital == "unmarried":
+                marital = "未婚"
+            elif marital == "married":
+                marital = "已婚"
+            else:
+                marital = "无偏向"
+            if degree == "middle":
+                degree = "小学/初中"
+            elif degree == "high":
+                degree = "高中/中专"
+            elif degree == "college":
+                degree = "大专"
+            elif degree == "university":
+                degree = "本科及以上"
+            else:
+                degree = "无偏向"
+            cur.execute(sql, (useremail, pkgname, sexual, age, marital, degree))
+            logging.debug("save : %s, %s, %s, %s, %s, %s", useremail, pkgname, sexual, age, marital, degree)
+            conn.commit()
+            sql_apps = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_id " \
+                       "FROM t_tags_soft WHERE t_softgame = 'soft' AND t_id > %s ORDER BY t_id LIMIT 10;"
+            cur.execute(sql_apps, num)
+            conn.commit()
+            apps = cur.fetchall()
+            return jsonify({"msg": "success", "apps": apps})
         except Exception as excep:
             logging.error(Exception, ":", excep)
             return jsonify({"msg": "sql error"})
