@@ -7,6 +7,7 @@ import logging
 import pymysql
 from flask import Flask, render_template
 from flask import request, jsonify, make_response
+from tagsconf import *
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -128,6 +129,33 @@ def userlogin(useremail, userpwd):
         return
 
 
+# @app.route("/gameinfo", methods=["POST", "GET"])
+# def gameinfo():
+#     """
+#     get game info limit 10
+#     :return:
+#     """
+#     try:
+#         useremail = request.cookies.get("useremail")
+#         conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+#         cur = conn.cursor()
+#         sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s"
+#         cur.execute(sql_user, useremail)
+#         game_end = cur.fetchall()[0][0]
+#         sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_id FROM t_tags_game " \
+#               "WHERE t_softgame = 'game' AND t_id > %s ORDER BY t_id LIMIT 10;"
+#         cur.execute(sql, game_end)
+#         conn.commit()
+#         apps = cur.fetchall()
+#         if len(apps) > 0:
+#             return jsonify({"msg": "has data", "apps": apps})
+#         else:
+#             return jsonify({"msg": "no data"})
+#
+#     except Exception as excep:
+#         logging.error(Exception, ":", excep)
+#         return jsonify({"msg": "no data"})
+
 @app.route("/gameinfo", methods=["POST", "GET"])
 def gameinfo():
     """
@@ -147,7 +175,7 @@ def gameinfo():
         conn.commit()
         apps = cur.fetchall()
         if len(apps) > 0:
-            return jsonify({"msg": "has data", "apps": apps})
+            return jsonify({"msg": "has data", "apps": apps, "tags": config_tags_game})
         else:
             return jsonify({"msg": "no data"})
 
@@ -162,60 +190,63 @@ def gametags():
     get tags for game that user given and save it
     :return:
     """
-    if request.method == "GET":
+    if request.method == "POST":
         useremail = request.cookies.get("useremail")
-        pkgname = request.args.get("pkgname")
-        sexual = request.args.get("sexual")
-        age = request.args.get("age")
-        marital = request.args.get("marital")
-        degree = request.args.get("degree")
-        logging.debug("useremail = %s, pkgname = %s, sexual = %s, age = %s, marital = %s", useremail, pkgname, sexual, age, marital)
-        try:
-            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-            cur = conn.cursor()
-            sql = "INSERT INTO t_user_tags (u_email, u_pkgname, u_gender, u_age, u_marital, u_degree) " \
-                  "VALUES (%s, %s, %s, %s, %s, %s)"
-            if sexual == "male":
-                sexual = "男"
-            elif sexual == "female":
-                sexual = "女"
-            else:
-                sexual = "无偏向"
-            if age == "teen":
-                age = "18岁以下"
-            elif age == "youth":
-                age = "18-25岁"
-            elif age == "old_youth":
-                age = "26-35岁"
-            elif age == "earth_mid":
-                age = "36-45岁"
-            elif age == "midlife":
-                age = "45岁以上"
-            else:
-                age = "无偏向"
-            if marital == "unmarried":
-                marital = "未婚"
-            elif marital == "married":
-                marital = "已婚"
-            else:
-                marital = "无偏向"
-            if degree == "middle":
-                degree = "小学/初中"
-            elif degree == "high":
-                degree = "高中/中专"
-            elif degree == "college":
-                degree = "大专"
-            elif degree == "university":
-                degree = "本科及以上"
-            else:
-                degree = "无偏向"
-            cur.execute(sql, (useremail, pkgname, sexual, age, marital, degree))
-            logging.debug("save : %s, %s, %s, %s, %s, %s", useremail, pkgname, sexual, age, marital, degree)
-            conn.commit()
-            return jsonify({"msg": "success"})
-        except Exception as excep:
-            logging.error(Exception, ":", excep)
-            return jsonify({"msg": "sql error"})
+        pkgname = request.form.get("pkgname")
+        tags = request.form.getlist("tags[][]")
+        print(request.form)
+        # sexual = request.args.get("sexual")
+        # age = request.args.get("age")
+        # marital = request.args.get("marital")
+        # degree = request.args.get("degree")
+        logging.debug("useremail = %s, pkgname = %s, tags = %s", useremail, pkgname, tags)
+        return jsonify({"msg": "success"})
+        # try:
+        #     conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+        #     cur = conn.cursor()
+        #     sql = "INSERT INTO t_user_tags (u_email, u_pkgname, u_gender, u_age, u_marital, u_degree) " \
+        #           "VALUES (%s, %s, %s, %s, %s, %s)"
+        #     if sexual == "male":
+        #         sexual = "男"
+        #     elif sexual == "female":
+        #         sexual = "女"
+        #     else:
+        #         sexual = "无偏向"
+        #     if age == "teen":
+        #         age = "18岁以下"
+        #     elif age == "youth":
+        #         age = "18-25岁"
+        #     elif age == "old_youth":
+        #         age = "26-35岁"
+        #     elif age == "earth_mid":
+        #         age = "36-45岁"
+        #     elif age == "midlife":
+        #         age = "45岁以上"
+        #     else:
+        #         age = "无偏向"
+        #     if marital == "unmarried":
+        #         marital = "未婚"
+        #     elif marital == "married":
+        #         marital = "已婚"
+        #     else:
+        #         marital = "无偏向"
+        #     if degree == "middle":
+        #         degree = "小学/初中"
+        #     elif degree == "high":
+        #         degree = "高中/中专"
+        #     elif degree == "college":
+        #         degree = "大专"
+        #     elif degree == "university":
+        #         degree = "本科及以上"
+        #     else:
+        #         degree = "无偏向"
+        #     cur.execute(sql, (useremail, pkgname, sexual, age, marital, degree))
+        #     logging.debug("save : %s, %s, %s, %s, %s, %s", useremail, pkgname, sexual, age, marital, degree)
+        #     conn.commit()
+        #     return jsonify({"msg": "success"})
+        # except Exception as excep:
+        #     logging.error(Exception, ":", excep)
+        #     return jsonify({"msg": "sql error"})
     else:
         logging.error("trans gametags with wrong request method: %s", request.method)
         return jsonify({"msg": "fail"})
