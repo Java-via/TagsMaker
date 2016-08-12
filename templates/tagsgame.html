@@ -37,29 +37,30 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-2">
-                    <img id="app_img" src="#">图标
+                <div class="col-lg-12" style="padding-top: 80px">
+                    <img id="app_img" src="#" style="height:100px; width: 100px ">
                 </div>
 
-                <div class="col-lg-5 col-lg-offset-0.5">
+                <div class="col-lg-12">
                     <div id="app_name" style="font-size: large"><a href="#" id="app_url">游戏名称</a></div>
                     <label id="app_pkgname" style="display: none"></label>
                 </div>
             </div>
+            <h2></h2>
 
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col-lg-12">
                     游戏关键词
                 </div>
-                <div class="col-lg-5" id="app_tags">
+                <div class="col-lg-12" id="app_tags">
                     关键词1 关键词2 关键词3
                 </div>
             </div>
             <h4>&nbsp;</h4>
             <div class="row">
-                <div class="col-lg-2">游戏描述
+                <div class="col-lg-12">游戏描述
                 </div>
-                <div class="col-md-10" id="app_desc">
+                <div class="col-lg-12" id="app_desc" style="text-align:justify">
                     游戏详情描述
                 </div>
             </div>
@@ -80,7 +81,7 @@
                     <button type="button" id="app_next" class="btn btn-info">下一个</button>
                 </div>
             </div>
-            <div class="mastfoot">
+            <div class="footer">
                 <div class="inner">
                     <p> by Jessie.</p>
                 </div>
@@ -101,6 +102,7 @@
     var index = 0;
     var apps;
     var tags;
+    var firstload = 0;
     window.onload = function () {
 
         $.ajax({
@@ -114,43 +116,48 @@
             success: function (data) {
                 if (data.msg.toString() == "no data") {
                     alert(data.msg.toString());
-                }else {
-                    tags = data.tags;
-                    for(key in tags) {
-                        if (key.indexOf("key") >= 0) {
-                            var tag_div = "<div class='col-lg-12' id='" + key + "';></div>";
-                            $('#tags').append(tag_div);
-                            var i = 0;
-                            for(n_key in tags[key]) {
-                                var tag_label = "<label id='" + "label_"+ key + i + "'>" + tags[key][n_key] + "&nbsp</label>";
-                                $("#" + key).append(tag_label);
-                                $("#label_"+n_key+i).attr("class", "label");
-                                $("#label_"+n_key+i).attr("style", "font-size: 15px");
-                                $("#label_"+n_key+i).attr("id", "label"+key);
-                                i = i + 1;
-                                var j = 0;
-                                // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                                for(v_key in tags[n_key]) {
-                                    // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                                    var tag_input = "<input id='" + "input_" + n_key + j + "'>" + tags[n_key][v_key] + "&nbsp";
-                                    $("#" + key).append(tag_input);
-                                    $("#input_"+n_key+j).attr("type", "radio");
-                                    $("#input_"+n_key+j).attr("name", n_key);
-                                    $("#input_"+n_key+j).attr("value", v_key);
-                                    j = j + 1;
+                } else {
+                    if (firstload == 0) {
+                        console.log(firstload);
+                        tags = data.tags;
+                        for (key in tags) {
+                            if (key.indexOf("key") >= 0) {
+                                var tag_div = "<div class='col-lg-12' id='" + key + "';></div>";
+                                $('#tags').append(tag_div);
+                                var i = 0;
+                                for (n_key in tags[key]) {
+                                    var tag_label = "<label id='" + "label_" + key + i + "'>" + tags[key][n_key] + "&nbsp</label>";
+                                    $("#" + key).append(tag_label);
+                                    $("#label_" + n_key + i).attr("class", "label");
+                                    $("#label_" + n_key + i).attr("style", "font-size: 15px");
+                                    i = i + 1;
+                                    var j = 0;
+                                    // tags[key][n_key]是label显示的汉字（如：性别偏好）
+                                    for (v_key in tags[n_key]) {
+                                        // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
+                                        var tag_input = "<input id='" + "input_" + n_key + j + "'>" + tags[n_key][v_key] + "&nbsp";
+                                        $("#" + key).append(tag_input);
+                                        $("#input_" + n_key + j).attr("type", "radio");
+                                        $("#input_" + n_key + j).attr("name", n_key);
+                                        $("#input_" + n_key + j).attr("value", v_key);
+                                        j = j + 1;
+                                    }
                                 }
                             }
                         }
+                        firstload += 1;
                     }
 
                     apps = data.apps;
+
                     var app = apps[index];
+                    console.log(app);
                     $('#app_pkgname').text(app[0]);
                     $('#app_name').text(app[1]);
                     $('#app_tags').text(app[3]);
                     $('#app_desc').text(app[2]);
                     $('#app_url').attr("href ", app[5]);
-                    $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
+                    $('#app_img').attr("src", app[6]);
                     index = index + 1;
                 }
             },
@@ -161,135 +168,178 @@
                 console.log(err)
             }
         });
+
+        $("#app_next").click(function () {
+            var tagsinfo;
+            tagsinfo = [];
+            for (key in tags) {
+                if (key.indexOf("key") >= 0) {
+                    for (n_key in tags[key]) {
+                        // tags[key][n_key]是label显示的汉字（如：性别偏好）
+                        if ($("input[name='" + n_key + "']:checked").length == 0) {
+                            alert("还未填写完整，不能提交");
+                            return;
+                        }
+                        tagsinfo.push({key: n_key, value: $("input[name='" + n_key + "']:checked").val()});
+                        for (v_key in tags[n_key]) {
+                            // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
+                        }
+                    }
+                }
+            }
+
+            var tagsname = "";
+            var tagsvalue = "";
+            for (var idx = 0; idx < tagsinfo.length; idx++) {
+                if (idx < (tagsinfo.length - 1)) {
+                    tagsname += tagsinfo[idx].key + ",";
+                    tagsvalue += tagsinfo[idx].value + ",";
+                } else {
+                    tagsname += tagsinfo[idx].key;
+                    tagsvalue += tagsinfo[idx].value;
+                }
+            }
+
+            $.ajax({
+                url: "/gametags",
+                dataType: "json",
+                // async : false,
+                data: {
+                    pkgname: $("#app_pkgname").text(),
+                    tagsname: tagsname,
+                    tagsvalue: tagsvalue
+                },
+                type: "GET",
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    if (data.msg.toString() != "success") {
+                        alert(data.msg.toString());
+                    }
+                    var app = apps[index];
+                    $('#app_pkgname').text(app[0]);
+                    $('#app_name').text(app[1]);
+                    $('#app_tags').text(app[3]);
+                    $('#app_desc').text(app[2]);
+                    $('#app_url').attr("href ", app[5]);
+                    $('#app_img').attr("src", app[6]);
+
+                    index = index + 1;
+                    if (index == 10) {
+                        $('#app_next').attr("disabled", "disabled");
+                        $('#group_next').removeAttr("disabled");
+                    }
+
+                    for (key in tags) {
+                        if (key.indexOf("key") >= 0) {
+                            var i = 0;
+                            for (n_key in tags[key]) {
+                                i = i + 1;
+                                var j = 0;
+                                // tags[key][n_key]是label显示的汉字（如：性别偏好）
+                                for (v_key in tags[n_key]) {
+                                    // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
+                                    $("input[name=" + n_key + "]:checked").prop("checked", false);
+                                    j = j + 1;
+                                }
+                            }
+                        }
+                    }
+                },
+                complete: function () {
+
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        });
+
+        $('#group_next').click(function () {
+            var tagsinfo;
+            tagsinfo = [];
+            for (key in tags) {
+                if (key.indexOf("key") >= 0) {
+                    for (n_key in tags[key]) {
+                        // tags[key][n_key]是label显示的汉字（如：性别偏好）
+                        if ($("input[name='" + n_key + "']:checked").length == 0) {
+                            alert("还未填写完整，不能提交");
+                            return;
+                        }
+                        tagsinfo.push({key: n_key, value: $("input[name='" + n_key + "']:checked").val()});
+                        for (v_key in tags[n_key]) {
+                            // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
+                        }
+                    }
+                }
+            }
+
+            var tagsname = "";
+            var tagsvalue = "";
+            for (var idx = 0; idx < tagsinfo.length; idx++) {
+                if (idx < (tagsinfo.length - 1)) {
+                    tagsname += tagsinfo[idx].key + ",";
+                    tagsvalue += tagsinfo[idx].value + ",";
+                } else {
+                    tagsname += tagsinfo[idx].key;
+                    tagsvalue += tagsinfo[idx].value;
+                }
+            }
+            $.ajax({
+                url: "/moregame",
+                dataType: "json",
+                data: {
+                    pkgname: $("#app_pkgname").text(),
+                    tagsname: tagsname,
+                    tagsvalue: tagsvalue,
+                    index: index
+                },
+                type: "GET",
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    index = 0;
+                    apps = data.apps;
+                    var app = apps[index];
+                    $('#app_pkgname').text(app[0]);
+                    $('#app_name').text(app[1]);
+                    $('#app_tags').text(app[3]);
+                    $('#app_desc').text(app[2]);
+                    $('#app_url').attr("href ", app[5]);
+                    $('#app_img').attr("src", app[6]);
+
+                    index = index + 1;
+
+                    for (key in tags) {
+                        if (key.indexOf("key") >= 0) {
+                            var i = 0;
+                            for (n_key in tags[key]) {
+                                i = i + 1;
+                                var j = 0;
+                                // tags[key][n_key]是label显示的汉字（如：性别偏好）
+                                for (v_key in tags[n_key]) {
+                                    // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
+                                    $("input[name=" + n_key + "]:checked").prop("checked", false);
+                                    j = j + 1;
+                                }
+                            }
+                        }
+                    }
+
+                    $('#app_next').removeAttr("disabled");
+                    $('#group_next').attr("disabled", "disabled");
+                },
+                complete: function () {
+
+                },
+                error: function () {
+
+                }
+            });
+        })
     }
-</script>
-
-<script defer="defer" type="text/javascript">
-
-    $("#app_next").click(function () {
-        var data;
-        data = [];
-        for(key in tags) {
-            if (key.indexOf("key") >= 0) {
-                for(n_key in tags[key]) {
-                    // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                    if($("input[name='"+ n_key +"']:checked").length == 0) {
-                        alert("还未填写完整，不能提交");
-                        return;
-                    }
-                    data.push({key: n_key, value : $("input[name='"+ n_key +"']:checked").val()});
-                    for(v_key in tags[n_key]) {
-                        // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                    }
-                }
-            }
-        }
-        console.log(data);
-
-        var _ajax = $.ajax({
-            url : "/gametags",
-            dataType : "json",
-//                async : false,
-            data : function() {
-                data.push({pkgname: $("#app_pkgname").text()});
-                return data;
-            },
-            type : "POST",
-            beforeSend: function () {
-//                if ($("input[name='sexual']:checked").length == 0
-//                        | $("input[name='age']:checked").length == 0
-//                        | $("input[name='age']:checked").length == 0
-//                        | $("input[name='degree']:checked").length == 0) {
-//                    alert("还未填写完整，不能提交");
-//                    _ajax.abort();
-//                }
-            },
-            success: function (data) {
-                if(data.msg.toString() != "success") {
-                    alert(data.msg.toString());
-                }
-                var app = apps[index];
-                $('#app_pkgname').text(app[0]);
-                $('#app_name').text(app[1]);
-                $('#app_tags').text(app[3]);
-                $('#app_desc').text(app[2]);
-                $('#app_url').attr("href ", app[5]);
-                $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
-
-                index = index + 1;
-                if (index == 10) {
-                    $('#app_next').attr("disabled", "disabled");
-                    $('#group_next').removeAttr("disabled");
-                }
-
-                $("input[name='sexual']:checked").prop("checked",false);
-                $("input[name='age']:checked").prop("checked",false);
-                $("input[name='marital']:checked").prop("checked",false);
-                $("input[name='degree']:checked").prop("checked",false);
-            },
-            complete: function () {
-
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        });
-    })
-</script>
-
-<script defer="defer" type="text/javascript">
-    $('#group_next').click(function () {
-        var _ajax = $.ajax( {
-            url : "/moregame",
-            dataType : "json",
-            data : {
-                pkgname : $("#app_pkgname").text(),
-                sexual : $("input[name='sexual']:checked").val(),
-                age : $("input[name='age']:checked").val(),
-                marital : $("input[name='marital']:checked").val(),
-                degree : $("input[name='degree']:checked").val(),
-                index : index
-            },
-            type : "GET",
-            beforeSend : function () {
-                if ($("input[name='sexual']:checked").length == 0
-                        | $("input[name='age']:checked").length == 0
-                        | $("input[name='age']:checked").length == 0
-                        | $("input[name='degree']:checked").length == 0) {
-                    alert("还未填写完整，不能提交");
-                    _ajax.abort();
-                }
-            },
-            success : function (data) {
-                index = 0;
-                apps = data.apps;
-                var app = apps[index];
-                $('#app_pkgname').text(app[0]);
-                $('#app_name').text(app[1]);
-                $('#app_tags').text(app[3]);
-                $('#app_desc').text(app[2]);
-                $('#app_url').attr("href ", app[5]);
-                $('#app_img').attr("img", "http://pp.myapp.com/ma_icon/0/icon_10627528_18151862_1415654543/96");
-
-                index = index + 1;
-
-                $("input[name='sexual']:checked").prop("checked",false);
-                $("input[name='age']:checked").prop("checked",false);
-                $("input[name='marital']:checked").prop("checked",false);
-                $("input[name='degree']:checked").prop("checked",false);
-
-                $('#app_next').removeAttr("disabled");
-                $('#group_next').attr("disabled", "disabled");
-            },
-            complete : function () {
-
-            },
-            error : function () {
-
-            }
-        });
-    })
-
 </script>
 
 </body></html>
