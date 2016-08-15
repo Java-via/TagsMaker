@@ -29,6 +29,11 @@ DB_CHARSET = "utf8"
 app = Flask(__name__)
 
 
+@app.route("/iframe")
+def iframe():
+    return render_template("iframe.html")
+
+
 @app.route("/")
 def index():
     """
@@ -168,64 +173,64 @@ def gametags():
         pkgname = request.args.get("pkgname")
         tagsname = request.args.get("tagsname").split(",")
         tagsvalue = request.args.get("tagsvalue").split(",")
-        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s", useremail, pkgname, tagsname, tagsvalue)
-        try:
-            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-            cur = conn.cursor()
-            sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                  "VALUES (%s, %s, %s, %s)"
-            for idx in range(0, len(tagsname)):
-                cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
-                logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
-                conn.commit()
-            return jsonify({"msg": "success"})
-        except Exception as excep:
-            logging.error(Exception, ":", excep)
-            return jsonify({"msg": "sql error"})
-    else:
-        logging.error("trans gametags with wrong request method: %s", request.method)
-        return jsonify({"msg": "fail"})
-
-
-@app.route("/moregame", methods=["POST", "GET"])
-def moregame():
-    """
-    get another 10 game apps
-    :return:
-    """
-    if request.method == "GET":
         index = request.args.get("index")
-        useremail = request.cookies.get("useremail")
-        pkgname = request.args.get("pkgname")
-        tagsname = request.args.get("tagsname").split(",")
-        tagsvalue = request.args.get("tagsvalue").split(",")
-        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s", useremail, pkgname, tagsname, tagsvalue)
-        try:
-            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-            cur = conn.cursor()
-            if int(index) == 10:
+        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s, index = %s",
+                      useremail, pkgname, tagsname, tagsvalue, index)
+        if index == 10:
+            try:
+                conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+                cur = conn.cursor()
+                # save tags of this user
+                sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
+                      "VALUES (%s, %s, %s, %s)"
+                for idx in range(0, len(tagsname)):
+                    cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+                    conn.commit()
+
+                # update endid of this user
                 sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
-                           "SET t1.u_game_end = (t0.game_end + 10) WHERE u_email = %s;"
+                          "SET t1.u_game_end = (t0.game_end + 1) WHERE u_email = %s;"
                 cur.execute(sql_end, (useremail, useremail))
                 conn.commit()
-            sql_search_end = "SELECT u_game_end FROM t_users WHERE u_email = %s;"
-            cur.execute(sql_search_end, useremail)
-            num = cur.fetchall()[0][0]
-            sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                  "VALUES (%s, %s, %s, %s)"
-            for idx in range(0, len(tagsname)):
-                cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
-                logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+
+                # select another 10 data
+                sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s"
+                cur.execute(sql_user, useremail)
+                game_end = cur.fetchall()[0][0]
+                sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl " \
+                      "FROM t_tags_game WHERE t_softgame = 'game' AND t_id > %s ORDER BY t_id LIMIT 10;"
+                cur.execute(sql, game_end)
                 conn.commit()
-            sql_apps = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl " \
-                       "FROM t_tags_game WHERE t_softgame = 'game' AND t_id > %s ORDER BY t_id LIMIT 10;"
-            cur.execute(sql_apps, num)
-            conn.commit()
-            apps = cur.fetchall()
-            return jsonify({"msg": "success", "apps": apps})
-        except Exception as excep:
-            logging.error(Exception, ":", excep)
-            return jsonify({"msg": "sql error"})
+                apps = cur.fetchall()
+                if len(apps) > 0:
+                    return jsonify({"msg": "another ten", "apps": apps})
+                else:
+                    return jsonify({"msg": "no data"})
+            except Exception as excep:
+                logging.error(Exception, ":", excep)
+                return jsonify({"msg": "sql error"})
+        else:
+            try:
+                conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+                cur = conn.cursor()
+                # save game tags of this user
+                sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
+                      "VALUES (%s, %s, %s, %s)"
+                for idx in range(0, len(tagsname)):
+                    cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+                    conn.commit()
+
+                # update end of this user
+                sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
+                          "SET t1.u_game_end = (t0.game_end + 1) WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, useremail))
+                conn.commit()
+                return jsonify({"msg": "success"})
+            except Exception as excep:
+                logging.error(Exception, ":", excep)
+                return jsonify({"msg": "sql error"})
     else:
         logging.error("trans gametags with wrong request method: %s", request.method)
         return jsonify({"msg": "fail"})
@@ -270,66 +275,64 @@ def softtags():
         pkgname = request.args.get("pkgname")
         tagsname = request.args.get("tagsname").split(",")
         tagsvalue = request.args.get("tagsvalue").split(",")
-        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s", useremail, pkgname, tagsname,
-                      tagsvalue)
-        try:
-            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-            cur = conn.cursor()
-            sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                  "VALUES (%s, %s, %s, %s)"
-            for idx in range(0, len(tagsname)):
-                cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
-                logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
-                conn.commit()
-            return jsonify({"msg": "success"})
-        except Exception as excep:
-            logging.error(Exception, ":", excep)
-            return jsonify({"msg": "sql error"})
-    else:
-        logging.error("trans softtags with wrong request method: %s", request.method)
-        return jsonify({"msg": "fail"})
-
-
-@app.route("/moresoft", methods=["POST", "GET"])
-def moresoft():
-    """
-    get another 10 soft apps
-    :return:
-    """
-    if request.method == "GET":
         index = request.args.get("index")
-        useremail = request.cookies.get("useremail")
-        pkgname = request.args.get("pkgname")
-        tagsname = request.args.get("tagsname").split(",")
-        tagsvalue = request.args.get("tagsvalue").split(",")
-        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s", useremail, pkgname, tagsname,
-                      tagsvalue)
-        try:
-            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-            cur = conn.cursor()
-            if int(index) == 10:
+        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s, index = %s",
+                      useremail, pkgname, tagsname, tagsvalue, index)
+        if index == 10:
+            try:
+                conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+                cur = conn.cursor()
+                # save soft tags of this user
+                sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
+                      "VALUES (%s, %s, %s, %s)"
+                for idx in range(0, len(tagsname)):
+                    cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+                    conn.commit()
+
+                # update soft end of this user
                 sql_end = "UPDATE t_users t1, (SELECT u_soft_end AS soft_end FROM t_users WHERE u_email = %s)t0 " \
-                          "SET t1.u_soft_end = (t0.soft_end + 10) WHERE u_email = %s;"
+                          "SET t1.u_soft_end = (t0.soft_end + 1) WHERE u_email = %s;"
                 cur.execute(sql_end, (useremail, useremail))
                 conn.commit()
-            sql_search_end = "SELECT u_soft_end FROM t_users WHERE u_email = %s;"
-            cur.execute(sql_search_end, useremail)
-            num = cur.fetchall()[0][0]
-            sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                  "VALUES (%s, %s, %s, %s)"
-            for idx in range(0, len(tagsname)):
-                cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
-                logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+
+                # select another ten soft
+                sql_user = "SELECT u_soft_end FROM t_users WHERE u_email = %s"
+                cur.execute(sql_user, useremail)
+                game_end = cur.fetchall()[0][0]
+                sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl " \
+                      "FROM t_tags_soft WHERE t_softgame = 'soft' AND t_id > %s ORDER BY t_id LIMIT 10;"
+                cur.execute(sql, game_end)
                 conn.commit()
-            sql_apps = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl " \
-                       "FROM t_tags_soft WHERE t_softgame = 'soft' AND t_id > %s ORDER BY t_id LIMIT 10;"
-            cur.execute(sql_apps, num)
-            conn.commit()
-            apps = cur.fetchall()
-            return jsonify({"msg": "success", "apps": apps})
-        except Exception as excep:
-            logging.error(Exception, ":", excep)
-            return jsonify({"msg": "sql error"})
+                apps = cur.fetchall()
+                if len(apps) > 0:
+                    return jsonify({"msg": "another ten", "apps": apps})
+                else:
+                    return jsonify({"msg": "no data"})
+            except Exception as excep:
+                logging.error(Exception, ":", excep)
+                return jsonify({"msg": "sql error"})
+        else:
+            try:
+                conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+                cur = conn.cursor()
+                # save soft tags of this user
+                sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
+                      "VALUES (%s, %s, %s, %s)"
+                for idx in range(0, len(tagsname)):
+                    cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+                    conn.commit()
+
+                # update soft end of this user
+                sql_end = "UPDATE t_users t1, (SELECT u_soft_end AS soft_end FROM t_users WHERE u_email = %s)t0 " \
+                          "SET t1.u_soft_end = (t0.soft_end + 1) WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, useremail))
+                conn.commit()
+                return jsonify({"msg": "success"})
+            except Exception as excep:
+                logging.error(Exception, ":", excep)
+                return jsonify({"msg": "sql error"})
     else:
         logging.error("trans softtags with wrong request method: %s", request.method)
         return jsonify({"msg": "fail"})

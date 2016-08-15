@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="col-lg-12">
-                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">应用名称</a></div>
+                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">游戏名称</a></div>
                     <label id="app_pkgname" style="display: none"></label>
                 </div>
             </div>
@@ -71,14 +71,15 @@
             <h2>&nbsp;</h2>
             <div class="row">
                 <div class="col-lg-4">
-                    <button type="button" id="app_top" class="btn btn-info">上一个</button>
+                    <!--<button type="button" id="app_top" class="btn btn-info">上一个</button>-->
                 </div>
                 <!--<div class="col-lg-2"></div>-->
                 <div class="col-lg-4">
-                    <button type="button" id="group_next" class="btn btn-info" disabled="disabled">下一组</button>
+                    <button type="button" id="app_next" class="btn btn-info">下一个</button>
+                    <!--<button type="button" id="group_next" class="btn btn-info" disabled="disabled">下一组</button>-->
                 </div>
                 <div class="col-lg-4">
-                    <button type="button" id="app_next" class="btn btn-info">下一个</button>
+                    <!--<button type="button" id="app_next" class="btn btn-info">下一个</button>-->
                 </div>
             </div>
             <div class="footer">
@@ -207,45 +208,76 @@
                 data: {
                     pkgname: $("#app_pkgname").text(),
                     tagsname: tagsname,
-                    tagsvalue: tagsvalue
+                    tagsvalue: tagsvalue,
+                    index: index
                 },
                 type: "GET",
                 beforeSend: function () {
 
                 },
                 success: function (data) {
-                    if (data.msg.toString() != "success") {
-                        alert(data.msg.toString());
-                    }
-                    var app = apps[index];
-                    $('#app_pkgname').text(app[0]);
-                    $('#app_name').text(app[1]);
-                    $('#app_tags').text(app[3]);
-                    $('#app_desc').text(app[2]);
-                    $('#app_url').attr("href ", app[5]);
-                    $('#app_img').attr("src", app[6]);
+                    if (data.msg.toString() == "another ten") {
+                        index = 0;
+                        apps = data.apps;
+                        var app = apps[index];
+                        $('#app_pkgname').text(app[0]);
+                        $('#app_name').text(app[1]);
+                        $('#app_tags').text(app[3]);
+                        $('#app_desc').text(app[2]);
+                        $('#app_url').attr("href ", app[5]);
+                        $('#app_img').attr("src", app[6]);
 
-                    index = index + 1;
-                    if (index == 10) {
-                        $('#app_next').attr("disabled", "disabled");
-                        $('#group_next').removeAttr("disabled");
-                    }
+                        index = index + 1;
 
-                    for (key in tags) {
-                        if (key.indexOf("key") >= 0) {
-                            var i = 0;
-                            for (n_key in tags[key]) {
-                                i = i + 1;
-                                var j = 0;
-                                // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                                for (v_key in tags[n_key]) {
-                                    // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                                    $("input[name=" + n_key + "]:checked").prop("checked", false);
-                                    j = j + 1;
+                        for (key in tags) {
+                            if (key.indexOf("key") >= 0) {
+                                var i = 0;
+                                for (n_key in tags[key]) {
+                                    i = i + 1;
+                                    var j = 0;
+                                    // tags[key][n_key]是label显示的汉字（如：性别偏好）
+                                    for (v_key in tags[n_key]) {
+                                        // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
+                                        $("input[name=" + n_key + "]:checked").prop("checked", false);
+                                        j = j + 1;
+                                    }
                                 }
                             }
                         }
+                    } else if (data.msg.toString() == "success") {
+                        var app = apps[index];
+                        $('#app_pkgname').text(app[0]);
+                        $('#app_name').text(app[1]);
+                        $('#app_tags').text(app[3]);
+                        $('#app_desc').text(app[2]);
+                        $('#app_url').attr("href ", app[5]);
+                        $('#app_img').attr("src", app[6]);
+
+                        index = index + 1;
+                        if (index == 10) {
+                            $('#app_next').attr("disabled", "disabled");
+                            $('#group_next').removeAttr("disabled");
+                        }
+
+                        for (key in tags) {
+                            if (key.indexOf("key") >= 0) {
+                                var i = 0;
+                                for (n_key in tags[key]) {
+                                    i = i + 1;
+                                    var j = 0;
+                                    // tags[key][n_key]是label显示的汉字（如：性别偏好）
+                                    for (v_key in tags[n_key]) {
+                                        // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
+                                        $("input[name=" + n_key + "]:checked").prop("checked", false);
+                                        j = j + 1;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        alert(data.msg.toString());
                     }
+
                 },
                 complete: function () {
 
@@ -255,90 +287,6 @@
                 }
             });
         });
-
-        $('#group_next').click(function () {
-            var tagsinfo;
-            tagsinfo = [];
-            for (key in tags) {
-                if (key.indexOf("key") >= 0) {
-                    for (n_key in tags[key]) {
-                        // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                        if ($("input[name='" + n_key + "']:checked").length == 0) {
-                            alert("还未填写完整，不能提交");
-                            return;
-                        }
-                        tagsinfo.push({key: n_key, value: $("input[name='" + n_key + "']:checked").val()});
-                        for (v_key in tags[n_key]) {
-                            // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                        }
-                    }
-                }
-            }
-
-            var tagsname = "";
-            var tagsvalue = "";
-            for (var idx = 0; idx < tagsinfo.length; idx++) {
-                if (idx < (tagsinfo.length - 1)) {
-                    tagsname += tagsinfo[idx].key + ",";
-                    tagsvalue += tagsinfo[idx].value + ",";
-                } else {
-                    tagsname += tagsinfo[idx].key;
-                    tagsvalue += tagsinfo[idx].value;
-                }
-            }
-            $.ajax({
-                url: "/moresoft",
-                dataType: "json",
-                data: {
-                    pkgname: $("#app_pkgname").text(),
-                    tagsname: tagsname,
-                    tagsvalue: tagsvalue,
-                    index: index
-                },
-                type: "GET",
-                beforeSend: function () {
-
-                },
-                success: function (data) {
-                    index = 0;
-                    apps = data.apps;
-                    var app = apps[index];
-                    $('#app_pkgname').text(app[0]);
-                    $('#app_name').text(app[1]);
-                    $('#app_tags').text(app[3]);
-                    $('#app_desc').text(app[2]);
-                    $('#app_url').attr("href ", app[5]);
-                    $('#app_img').attr("src", app[6]);
-
-                    index = index + 1;
-
-                    for (key in tags) {
-                        if (key.indexOf("key") >= 0) {
-                            var i = 0;
-                            for (n_key in tags[key]) {
-                                i = i + 1;
-                                var j = 0;
-                                // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                                for (v_key in tags[n_key]) {
-                                    // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                                    $("input[name=" + n_key + "]:checked").prop("checked", false);
-                                    j = j + 1;
-                                }
-                            }
-                        }
-                    }
-
-                    $('#app_next').removeAttr("disabled");
-                    $('#group_next').attr("disabled", "disabled");
-                },
-                complete: function () {
-
-                },
-                error: function () {
-
-                }
-            });
-        })
     }
 </script>
 
