@@ -44,6 +44,7 @@
                 <div class="col-lg-12">
                     <div id="app_name" style="font-size: large"><a href="#" id="app_url">游戏名称</a></div>
                     <label id="app_pkgname" style="display: none"></label>
+                    <label id="app_id" style="display: none"></label>
                 </div>
             </div>
             <h2></h2>
@@ -60,7 +61,7 @@
             <div class="row">
                 <div class="col-lg-12">应用描述
                 </div>
-                <div class="col-lg-12" id="app_desc" style="text-align:justify">
+                <div class="col-lg-12" id="app_desc" style=" width: 800px;text-align:justify; word-break: break-all; word-wrap: break-word">
                     应用详情描述
                 </div>
             </div>
@@ -154,6 +155,7 @@
                     var app = apps[index];
                     console.log(app);
                     $('#app_pkgname').text(app[0]);
+                    $('#app_id').text(app[7]);
                     $('#app_name').text(app[1]);
                     $('#app_tags').text(app[3]);
                     $('#app_desc').text(app[2]);
@@ -207,6 +209,7 @@
                 // async : false,
                 data: {
                     pkgname: $("#app_pkgname").text(),
+                    appid: $("#app_id").text(),
                     tagsname: tagsname,
                     tagsvalue: tagsvalue,
                     index: index
@@ -221,6 +224,7 @@
                         apps = data.apps;
                         var app = apps[index];
                         $('#app_pkgname').text(app[0]);
+                        $('#app_id').text(app[7]);
                         $('#app_name').text(app[1]);
                         $('#app_tags').text(app[3]);
                         $('#app_desc').text(app[2]);
@@ -247,6 +251,7 @@
                     } else if (data.msg.toString() == "success") {
                         var app = apps[index];
                         $('#app_pkgname').text(app[0]);
+                        $('#app_id').text(app[7]);
                         $('#app_name').text(app[1]);
                         $('#app_tags').text(app[3]);
                         $('#app_desc').text(app[2]);
@@ -254,10 +259,10 @@
                         $('#app_img').attr("src", app[6]);
 
                         index = index + 1;
-                        if (index == 10) {
-                            $('#app_next').attr("disabled", "disabled");
-                            $('#group_next').removeAttr("disabled");
-                        }
+//                        if (index == 10) {
+//                            $('#app_next').attr("disabled", "disabled");
+//                            $('#group_next').removeAttr("disabled");
+//                        }
 
                         for (key in tags) {
                             if (key.indexOf("key") >= 0) {

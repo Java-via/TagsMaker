@@ -57,8 +57,8 @@ def save():
         #         cur_l.execute(sql_l_game, (app[0], app[1], app[2], app[3], app[4], app[5], app[6]))
         #     conn_l.commit()
         # logging.debug("success to insert")
-        sql = "SELECT a_pkgname, a_picurl, a_softgame FROM t_apps_additional_united " \
-              "WHERE DATE(a_getdate) = '2016-08-06';"
+        sql = "SELECT a_pkgname, a_picurl, a_softgame FROM t_apps_additional " \
+              "WHERE a_getdate = '2016-08-12' AND a_source = 'yyb';"
         logging.debug("start to select pic")
         cur.execute(sql)
         conn.commit()
@@ -85,8 +85,8 @@ def savepic():
     cur = conn.cursor()
     conn_l = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
     cur_l = conn_l.cursor()
-    sql = "SELECT a_pkgname, a_picurl, a_softgame FROM t_apps_additional_united " \
-          "WHERE DATE(a_getdate) = '2016-08-06';"
+    sql = "SELECT a_pkgname, a_picurl, a_softgame FROM t_apps_additional " \
+          "WHERE DATE(a_getdate) = '2016-08-12' AND a_source = 'yyb';"
     logging.debug("start to select from additional")
     cur.execute(sql)
     conn.commit()
@@ -106,5 +106,5 @@ def savepic():
     return
 
 if __name__ == "__main__":
-    save()
+    savepic()
 

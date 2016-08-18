@@ -8,23 +8,9 @@ import pymysql
 from flask import Flask, render_template
 from flask import request, jsonify, make_response
 from tagsconf import *
+from db_config import *
 
 logging.basicConfig(level=logging.DEBUG)
-
-# ----server----
-SDB_HOST = "101.200.174.172"
-SDB_DB = "data_apps"
-SDB_USER = "dba_apps"
-SDB_PWD = "mimadba_apps"
-SDB_CHARSET = "utf8"
-
-# ----local----
-DB_HOST = "127.0.0.1"
-DB_APPDB = "app_db"
-DB_DB = "my_db"
-DB_USER = "root"
-DB_PWD = "123"
-DB_CHARSET = "utf8"
 
 app = Flask(__name__)
 
@@ -144,14 +130,16 @@ def gameinfo():
         useremail = request.cookies.get("useremail")
         conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
         cur = conn.cursor()
-        sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s"
+        sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s;"
         cur.execute(sql_user, useremail)
         game_end = cur.fetchall()[0][0]
-        sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl FROM t_tags_game " \
-              "WHERE t_softgame = 'game' AND t_id > %s ORDER BY t_id LIMIT 10;"
+
+        sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+              "FROM t_apps_basic_united WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
         cur.execute(sql, game_end)
         conn.commit()
         apps = cur.fetchall()
+
         if len(apps) > 0:
             return jsonify({"msg": "has data", "apps": apps, "tags": config_tags_game})
         else:
@@ -171,12 +159,13 @@ def gametags():
     if request.method == "GET":
         useremail = request.cookies.get("useremail")
         pkgname = request.args.get("pkgname")
+        appid = request.args.get("appid")
         tagsname = request.args.get("tagsname").split(",")
         tagsvalue = request.args.get("tagsvalue").split(",")
-        index = request.args.get("index")
-        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s, index = %s",
-                      useremail, pkgname, tagsname, tagsvalue, index)
-        if index == 10:
+        game_index = request.args.get("index")
+        logging.debug("useremail = %s, pkgname = %s, appid = %s, tagsname = %s, tagsvalue = %s, index = %s",
+                      useremail, pkgname, appid, tagsname, tagsvalue, game_index)
+        if game_index == "10":
             try:
                 conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
                 cur = conn.cursor()
@@ -190,16 +179,17 @@ def gametags():
 
                 # update endid of this user
                 sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
-                          "SET t1.u_game_end = (t0.game_end + 1) WHERE u_email = %s;"
-                cur.execute(sql_end, (useremail, useremail))
+                          "SET t1.u_game_end = %s WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, appid, useremail))
                 conn.commit()
 
                 # select another 10 data
                 sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s"
                 cur.execute(sql_user, useremail)
                 game_end = cur.fetchall()[0][0]
-                sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl " \
-                      "FROM t_tags_game WHERE t_softgame = 'game' AND t_id > %s ORDER BY t_id LIMIT 10;"
+
+                sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                      "FROM t_apps_basic_united WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
                 cur.execute(sql, game_end)
                 conn.commit()
                 apps = cur.fetchall()
@@ -224,8 +214,8 @@ def gametags():
 
                 # update end of this user
                 sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
-                          "SET t1.u_game_end = (t0.game_end + 1) WHERE u_email = %s;"
-                cur.execute(sql_end, (useremail, useremail))
+                          "SET t1.u_game_end = %s WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, appid, useremail))
                 conn.commit()
                 return jsonify({"msg": "success"})
             except Exception as excep:
@@ -249,11 +239,13 @@ def softinfo():
         sql_user = "SELECT u_soft_end FROM t_users WHERE u_email = %s"
         cur.execute(sql_user, useremail)
         soft_end = cur.fetchall()[0][0]
-        sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl FROM t_tags_soft " \
-              "WHERE t_softgame = 'soft' AND t_id > %s ORDER BY t_id LIMIT 10;"
+
+        sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+              "FROM t_apps_basic_united WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
         cur.execute(sql, soft_end)
         conn.commit()
         apps = cur.fetchall()
+
         if len(apps) > 0:
             return jsonify({"msg": "has data", "apps": apps, "tags": config_tags_soft})
         else:
@@ -273,12 +265,13 @@ def softtags():
     if request.method == "GET":
         useremail = request.cookies.get("useremail")
         pkgname = request.args.get("pkgname")
+        appid = request.args.get("appid")
         tagsname = request.args.get("tagsname").split(",")
         tagsvalue = request.args.get("tagsvalue").split(",")
-        index = request.args.get("index")
-        logging.debug("useremail = %s, pkgname = %s, tagsname = %s, tagsvalue = %s, index = %s",
-                      useremail, pkgname, tagsname, tagsvalue, index)
-        if index == 10:
+        soft_index = request.args.get("index")
+        logging.debug("useremail = %s, pkgname = %s, pkgname = %s, tagsname = %s, tagsvalue = %s, index = %s",
+                      useremail, pkgname, appid, tagsname, tagsvalue, soft_index)
+        if soft_index == "10":
             try:
                 conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
                 cur = conn.cursor()
@@ -292,20 +285,21 @@ def softtags():
 
                 # update soft end of this user
                 sql_end = "UPDATE t_users t1, (SELECT u_soft_end AS soft_end FROM t_users WHERE u_email = %s)t0 " \
-                          "SET t1.u_soft_end = (t0.soft_end + 1) WHERE u_email = %s;"
-                cur.execute(sql_end, (useremail, useremail))
+                          "SET t1.u_soft_end = %s WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, appid, useremail))
                 conn.commit()
 
                 # select another ten soft
                 sql_user = "SELECT u_soft_end FROM t_users WHERE u_email = %s"
                 cur.execute(sql_user, useremail)
                 game_end = cur.fetchall()[0][0]
-                sql = "SELECT t_pkgname, t_name, t_description, t_defaulttags, t_classify, t_url, t_picurl " \
-                      "FROM t_tags_soft WHERE t_softgame = 'soft' AND t_id > %s ORDER BY t_id LIMIT 10;"
+                sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                      "FROM t_apps_basic_united WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
                 cur.execute(sql, game_end)
                 conn.commit()
                 apps = cur.fetchall()
                 if len(apps) > 0:
+                    logging.debug("another ten")
                     return jsonify({"msg": "another ten", "apps": apps})
                 else:
                     return jsonify({"msg": "no data"})
@@ -326,9 +320,10 @@ def softtags():
 
                 # update soft end of this user
                 sql_end = "UPDATE t_users t1, (SELECT u_soft_end AS soft_end FROM t_users WHERE u_email = %s)t0 " \
-                          "SET t1.u_soft_end = (t0.soft_end + 1) WHERE u_email = %s;"
-                cur.execute(sql_end, (useremail, useremail))
+                          "SET t1.u_soft_end = %s WHERE u_email = %s;"
+                cur.execute(sql_end, (useremail, appid, useremail))
                 conn.commit()
+                logging.debug("success")
                 return jsonify({"msg": "success"})
             except Exception as excep:
                 logging.error(Exception, ":", excep)
@@ -357,4 +352,4 @@ def userinfo():
             return jsonify({"msg": "have users", "users": user})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
