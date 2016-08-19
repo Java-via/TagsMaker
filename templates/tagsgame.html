@@ -64,6 +64,11 @@
                 <div class="col-lg-12" id="app_desc" style="text-align:justify">
                     游戏详情描述
                 </div>
+                <button class="btn btn-link btn-sm" id="show_ori">查看原网页</button>
+                <button class="btn btn-link btn-sm" id="hidden_ori" style="display: none">隐藏原网页</button>
+                <div class="col-lg-12">
+                    <iframe id="app_iframe" src="#" style="height: 600px; width: 500px; display: none;" scrolling="yes">原网页</iframe>
+                </div>
             </div>
 
             <h2>&nbsp;</h2>
@@ -124,7 +129,7 @@
                         tags = data.tags;
                         for (key in tags) {
                             if (key.indexOf("key") >= 0) {
-                                var tag_div = "<div class='col-lg-12' id='" + key + "';></div>";
+                                var tag_div = "<div class='col-lg-12' id='" + key + "'; style='text-align: left'></div>";
                                 $('#tags').append(tag_div);
                                 var i = 0;
                                 for (n_key in tags[key]) {
@@ -158,6 +163,7 @@
                     $('#app_id').text(app[7]);
                     $('#app_name').text(app[1]);
                     $('#app_tags').text(app[3]);
+                    $('#app_iframe').attr("src", app[5]);
                     $('#app_desc').text(app[2]);
                     $('#app_url').attr("href ", app[5]);
                     $('#app_img').attr("src", app[6]);
@@ -170,6 +176,18 @@
             error: function (err) {
                 console.log(err)
             }
+        });
+
+        $("#show_ori").click(function () {
+            $("#app_iframe").show();
+            $("#show_ori").hide();
+            $("#hidden_ori").show();
+        });
+
+        $("#hidden_ori").click(function () {
+            $("#app_iframe").hide();
+            $("#hidden_ori").hide();
+            $("#show_ori").show();
         });
 
         $("#app_next").click(function () {
@@ -227,6 +245,7 @@
                         $('#app_id').text(app[7]);
                         $('#app_name').text(app[1]);
                         $('#app_tags').text(app[3]);
+                        $('#app_iframe').attr("src", app[5]);
                         $('#app_desc').text(app[2]);
                         $('#app_url').attr("href ", app[5]);
                         $('#app_img').attr("src", app[6]);
@@ -254,6 +273,7 @@
                         $('#app_id').text(app[7]);
                         $('#app_name').text(app[1]);
                         $('#app_tags').text(app[3]);
+                        $('#app_iframe').attr("src", app[5]);
                         $('#app_desc').text(app[2]);
                         $('#app_url').attr("href ", app[5]);
                         $('#app_img').attr("src", app[6]);
