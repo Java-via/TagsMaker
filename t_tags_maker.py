@@ -27,19 +27,22 @@ def insert_data(date):
     l_conn = pymysql.connect(host=DB_HOST, db=DB_DB, user=DB_USER, passwd=DB_PWD, charset=DB_CHARSET)
     s_cur = s_conn.cursor()
     l_cur = l_conn.cursor()
+    l_sql_exit = "SELECT a_pkgname FROM t_tags_apps"
+    l_cur.execute(l_sql_exit)
+    tags_pkgname_list = l_cur.fetchall()
     s_sql_addi = "SELECT a_pkgname, a_pkgname_list, a_install_sum FROM t_apps_addi_united " \
                  "WHERE DATE(a_getdate) = %s ORDER BY a_install_sum DESC;"
-    s_sql_basic = "SELECT a_pkgname, a_pkgname_list, a_name, a_url, a_picurl, " \
-                  "a_description, a_classify, a_defaulttags, a_softgame FROM t_apps_basic_united WHERE a_pkgname IN %s;"
-    l_sql_tags = "INSERT INTO t_tags_apps SET a_pkgname, a_pkgname_list, a_name, a_url, a_picurl, " \
-                 "a_description, a_classify, a_defaulttags, a_softgame, a_install_sum " \
-                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
     s_cur.execute(s_sql_addi, date)
     logging.debug("Addi select order by install_sum is over")
     for app in s_cur.fetchall():
+        s_sql_basic = "SELECT a_pkgname, a_pkgname_list, a_name, a_url, a_picurl, a_description, a_classify, " \
+                      "a_defaulttags, a_softgame FROM t_apps_basic_united WHERE a_pkgname IN (%s);"
         pkglist = get_string_split(app[1], split_chars=(' ', '\n'), is_remove_empty=True)
         logging.debug("Here app is: %s", pkglist[1])
         logging.debug("Pkglist is that: %s", pkglist)
+        in_p = ', '.join(list(map(lambda x: '%s', pkglist)))
+        s_sql_basic = s_sql_basic % in_p
         s_cur.execute(s_sql_basic, pkglist)
         logging.debug("Basic select a_pkgname_list is over")
         apps_basic = s_cur.fetchall()
@@ -49,9 +52,19 @@ def insert_data(date):
             logging.debug("Basic select is right")
             for item in apps_basic[0]:
                 pkg.append(item)
-            logging.debug("%s install is: %s", (pkg[0], app[2]))
+            logging.debug("%s install is: %s", pkg[0], app[2])
             pkg.append(app[2])
-            l_cur.execute(l_sql_tags, pkg)
+            logging.debug("PKG IS len()=%d, :%s", len(pkg), pkg)
+            if pkg[0] not in tags_pkgname_list:
+                l_sql_tags = "INSERT INTO t_tags_apps (a_pkgname, a_pkgname_list, a_name, a_url, a_picurl, " \
+                         "a_description, a_classify, a_defaulttags, a_softgame, a_install_sum) " \
+                         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                l_cur.execute(l_sql_tags, pkg)
+                l_conn.commit()
+                # logging.debug("CHECK error: %s", l_cur.insertSql)
+                logging.debug("INSERT SUCCESS, row number=%s", l_cur.rowcount)
+            else:
+                logging.warning("%s is already exist in t_tags_apps", pkg[0])
         else:
             logging.error("Basic select error in: %s", pkglist)
 

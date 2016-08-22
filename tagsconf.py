@@ -1,5 +1,9 @@
 # _*_ coding: utf-8 _*_
 
+
+# base = {}
+# config_tags_soft.update(base)
+
 config_tags_soft = {
     "key_0": {"gender": "性别偏好"}, "gender": {"male": "男", "female": "女", "all": "无偏向"},
     "key_1": {"marital": "婚姻偏好"}, "marital": {"unmarried": "未婚", "married": "已婚", "all": "无偏向"},

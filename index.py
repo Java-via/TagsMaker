@@ -135,7 +135,7 @@ def gameinfo():
         game_end = cur.fetchall()[0][0]
 
         sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-              "FROM t_apps_basic_united WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+              "FROM t_tags_apps WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
         cur.execute(sql, game_end)
         conn.commit()
         apps = cur.fetchall()
@@ -189,7 +189,7 @@ def gametags():
                 game_end = cur.fetchall()[0][0]
 
                 sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                      "FROM t_apps_basic_united WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                      "FROM t_tags_apps WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
                 cur.execute(sql, game_end)
                 conn.commit()
                 apps = cur.fetchall()
@@ -241,7 +241,7 @@ def softinfo():
         soft_end = cur.fetchall()[0][0]
 
         sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-              "FROM t_apps_basic_united WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
+              "FROM t_tags_apps WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
         cur.execute(sql, soft_end)
         conn.commit()
         apps = cur.fetchall()
@@ -294,7 +294,7 @@ def softtags():
                 cur.execute(sql_user, useremail)
                 game_end = cur.fetchall()[0][0]
                 sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                      "FROM t_apps_basic_united WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                      "FROM t_tags_apps WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
                 cur.execute(sql, game_end)
                 conn.commit()
                 apps = cur.fetchall()
