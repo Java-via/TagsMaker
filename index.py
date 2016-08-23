@@ -126,6 +126,8 @@ def gameinfo():
     get game info limit 10
     :return:
     """
+
+    make_response("X-Frame-Options", "SAMEORIGIN")
     try:
         useremail = request.cookies.get("useremail")
         conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
@@ -135,7 +137,7 @@ def gameinfo():
         game_end = cur.fetchall()[0][0]
 
         sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-              "FROM t_tags_apps WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+              "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
         cur.execute(sql, game_end)
         conn.commit()
         apps = cur.fetchall()
@@ -189,7 +191,7 @@ def gametags():
                 game_end = cur.fetchall()[0][0]
 
                 sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                      "FROM t_tags_apps WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                      "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
                 cur.execute(sql, game_end)
                 conn.commit()
                 apps = cur.fetchall()
@@ -232,6 +234,9 @@ def softinfo():
     get soft info limit 10
     :return:
     """
+
+    make_response("X-Frame-Options", "SAMEORIGIN")
+
     try:
         useremail = request.cookies.get("useremail")
         conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
@@ -241,7 +246,7 @@ def softinfo():
         soft_end = cur.fetchall()[0][0]
 
         sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-              "FROM t_tags_apps WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
+              "FROM t_tags_apps_test WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
         cur.execute(sql, soft_end)
         conn.commit()
         apps = cur.fetchall()
@@ -294,7 +299,7 @@ def softtags():
                 cur.execute(sql_user, useremail)
                 game_end = cur.fetchall()[0][0]
                 sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                      "FROM t_tags_apps WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                      "FROM t_tags_apps_test WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
                 cur.execute(sql, game_end)
                 conn.commit()
                 apps = cur.fetchall()
