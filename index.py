@@ -127,7 +127,6 @@ def gameinfo():
     :return:
     """
 
-    make_response("X-Frame-Options", "SAMEORIGIN")
     try:
         useremail = request.cookies.get("useremail")
         conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)

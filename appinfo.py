@@ -107,4 +107,4 @@ def get_string_split(string, split_chars=(" ", "\t", ","), is_remove_empty=False
 
 
 if __name__ == "__main__":
-    insert_data("2016-08-18")
+    insert_data("2016-08-24")
