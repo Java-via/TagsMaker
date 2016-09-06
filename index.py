@@ -126,29 +126,31 @@ def gameinfo():
     get game info limit 10
     :return:
     """
+    useremail = request.cookies.get("useremail")
+    if useremail:
+        try:
+            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+            cur = conn.cursor()
+            sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s;"
+            cur.execute(sql_user, useremail)
+            game_end = cur.fetchall()[0][0]
 
-    try:
-        useremail = request.cookies.get("useremail")
-        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-        cur = conn.cursor()
-        sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s;"
-        cur.execute(sql_user, useremail)
-        game_end = cur.fetchall()[0][0]
+            sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                  "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+            cur.execute(sql, game_end)
+            conn.commit()
+            apps = cur.fetchall()
 
-        sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-              "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
-        cur.execute(sql, game_end)
-        conn.commit()
-        apps = cur.fetchall()
+            if len(apps) > 0:
+                return jsonify({"msg": "has data", "apps": apps, "tags": config_tags_game})
+            else:
+                return jsonify({"msg": "no data"})
 
-        if len(apps) > 0:
-            return jsonify({"msg": "has data", "apps": apps, "tags": config_tags_game})
-        else:
+        except Exception as excep:
+            logging.error(Exception, ":", excep)
             return jsonify({"msg": "no data"})
-
-    except Exception as excep:
-        logging.error(Exception, ":", excep)
-        return jsonify({"msg": "no data"})
+    else:
+        return jsonify({"msg": "用户未登录"})
 
 
 @app.route("/gametags", methods=["POST", "GET"])
@@ -159,74 +161,75 @@ def gametags():
     """
     if request.method == "GET":
         useremail = request.cookies.get("useremail")
-        pkgname = request.args.get("pkgname")
-        appid = request.args.get("appid")
-        tagsname = request.args.get("tagsname").split(",")
-        tagsvalue = request.args.get("tagsvalue").split(",")
-        game_index = request.args.get("index")
-        logging.debug("useremail = %s, pkgname = %s, appid = %s, tagsname = %s, tagsvalue = %s, index = %s",
-                      useremail, pkgname, appid, tagsname, tagsvalue, game_index)
-        if useremail == None:
-            return jsonify({"msg": "用户未登录"})
-        if game_index == "10":
-            try:
-                conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-                cur = conn.cursor()
-                # save tags of this user
-                sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                      "VALUES (%s, %s, %s, %s)"
-                for idx in range(0, len(tagsname)):
-                    cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
-                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+        if useremail:
+            pkgname = request.args.get("pkgname")
+            appid = request.args.get("appid")
+            tagsname = request.args.get("tagsname").split(",")
+            tagsvalue = request.args.get("tagsvalue").split(",")
+            game_index = request.args.get("index")
+            logging.debug("useremail = %s, pkgname = %s, appid = %s, tagsname = %s, tagsvalue = %s, index = %s",
+                          useremail, pkgname, appid, tagsname, tagsvalue, game_index)
+            if game_index == "10":
+                try:
+                    conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+                    cur = conn.cursor()
+                    # save tags of this user
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
+                          "VALUES (%s, %s, %s, %s)"
+                    for idx in range(0, len(tagsname)):
+                        cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                        logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+                        conn.commit()
+
+                    # update endid of this user
+                    sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
+                              "SET t1.u_game_end = %s WHERE u_email = %s;"
+                    cur.execute(sql_end, (useremail, appid, useremail))
                     conn.commit()
 
-                # update endid of this user
-                sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
-                          "SET t1.u_game_end = %s WHERE u_email = %s;"
-                cur.execute(sql_end, (useremail, appid, useremail))
-                conn.commit()
+                    # select another 10 data
+                    sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s"
+                    cur.execute(sql_user, useremail)
+                    game_end = cur.fetchall()[0][0]
 
-                # select another 10 data
-                sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s"
-                cur.execute(sql_user, useremail)
-                game_end = cur.fetchall()[0][0]
+                    sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                          "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                    cur.execute(sql, game_end)
+                    conn.commit()
+                    apps = cur.fetchall()
+                    if len(apps) > 0:
+                        return jsonify({"msg": "another ten", "apps": apps})
+                    else:
+                        return jsonify({"msg": "no data"})
+                except Exception as excep:
+                    logging.error(Exception, ":", excep)
+                    return jsonify({"msg": "sql error"})
+            else:
+                try:
+                    conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+                    cur = conn.cursor()
+                    # save game tags of this user
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
+                          "VALUES (%s, %s, %s, %s)"
+                    for idx in range(0, len(tagsname)):
+                        cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                        logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
+                        conn.commit()
 
-                sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                      "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
-                cur.execute(sql, game_end)
-                conn.commit()
-                apps = cur.fetchall()
-                if len(apps) > 0:
-                    return jsonify({"msg": "another ten", "apps": apps})
-                else:
-                    return jsonify({"msg": "no data"})
-            except Exception as excep:
-                logging.error(Exception, ":", excep)
-                return jsonify({"msg": "sql error"})
+                    # update end of this user
+                    sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
+                              "SET t1.u_game_end = %s WHERE u_email = %s;"
+                    cur.execute(sql_end, (useremail, appid, useremail))
+                    conn.commit()
+                    return jsonify({"msg": "success"})
+                except Exception as excep:
+                    logging.error(Exception, ":", excep)
+                    return jsonify({"msg": "sql error"})
         else:
-            try:
-                conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-                cur = conn.cursor()
-                # save game tags of this user
-                sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                      "VALUES (%s, %s, %s, %s)"
-                for idx in range(0, len(tagsname)):
-                    cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
-                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
-                    conn.commit()
-
-                # update end of this user
-                sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
-                          "SET t1.u_game_end = %s WHERE u_email = %s;"
-                cur.execute(sql_end, (useremail, appid, useremail))
-                conn.commit()
-                return jsonify({"msg": "success"})
-            except Exception as excep:
-                logging.error(Exception, ":", excep)
-                return jsonify({"msg": "sql error"})
+            return jsonify({"msg": "用户未登录"})
     else:
         logging.error("trans gametags with wrong request method: %s", request.method)
-        return jsonify({"msg": "fail"})
+        return jsonify({"msg": "bad request"})
 
 
 @app.route("/softinfo", methods=["POST", "GET"])
@@ -341,7 +344,7 @@ def softtags():
 
     else:
         logging.error("trans softtags with wrong request method: %s", request.method)
-        return jsonify({"msg": "fail"})
+        return jsonify({"msg": "bad request"})
 
 
 @app.route("/userinfo", methods=["POST", "GET"])

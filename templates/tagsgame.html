@@ -121,9 +121,7 @@
 
             },
             success: function (data) {
-                if (data.msg.toString() == "no data") {
-                    alert(data.msg.toString());
-                } else {
+                if (data.msg.toString() == "has data") {
                     if (firstload == 0) {
                         console.log(firstload);
                         tags = data.tags;
@@ -168,6 +166,11 @@
                     $('#app_url').attr("href ", app[5]);
                     $('#app_img').attr("src", app[6]);
                     index = index + 1;
+                }else if (data.msg.toString() == "用户未登录"){
+                    alert(data.msg.toString());
+                    window.location.href = "./sig"
+                } else {
+                    alert(data.msg.toString());
                 }
             },
             complete: function () {
@@ -295,6 +298,9 @@
                                 }
                             }
                         }
+                    } else if (data.msg.toString() == "用户未登录"){
+                        alert(data.msg.toString());
+                        window.location.href = "./sig"
                     } else {
                         alert(data.msg.toString());
                     }
