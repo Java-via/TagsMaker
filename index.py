@@ -4,7 +4,6 @@
 this model is aimed to route
 """
 import logging
-import pymysql
 from flask import Flask, render_template
 from flask import request, jsonify, make_response
 from tagsconf import *
@@ -36,28 +35,6 @@ def sig():
     :return:
     """
     return render_template("login.html")
-
-
-@app.route("/login", methods=["POST", "GET"])
-def login():
-    """
-    login this system
-    :return:
-    """
-    if request.method == 'POST':
-        user_email = request.form.get("userEmail")
-        user_pwd = request.form.get("userPwd")
-        logging.debug("user_email = %s, user_pwd = %s", user_email, user_pwd)
-
-    logging.debug("userlogin = %s", userlogin(user_email, user_pwd))
-    if userlogin(user_email, user_pwd) == "manager":
-        return jsonify({"msg": "manager"})
-    elif userlogin(user_email, user_pwd) == "exist":
-        resp = make_response(jsonify({"msg": "success"}))
-        resp.set_cookie("useremail", user_email)
-        return resp
-    else:
-        return jsonify({"msg": "fail"})
 
 
 @app.route("/tagsbegin", methods=["POST", "GET"])
@@ -96,6 +73,30 @@ def tagsgame():
     return render_template("tagsgame.html")
 
 
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    """
+    login this system
+    :return:
+    """
+    if request.method == 'POST':
+        print("request.from : %s" % request.form)
+
+        user_email = request.form.get("userEmail")
+        user_pwd = request.form.get("userPwd")
+        logging.debug("user_email = %s, user_pwd = %s", user_email, user_pwd)
+
+    logging.debug("userlogin = %s", userlogin(user_email, user_pwd))
+    if userlogin(user_email, user_pwd) == "manager":
+        return jsonify({"msg": "manager"})
+    elif userlogin(user_email, user_pwd) == "exist":
+        resp = make_response(jsonify({"msg": "success"}))
+        resp.set_cookie("useremail", user_email)
+        return resp
+    else:
+        return jsonify({"msg": "fail"})
+
+
 def userlogin(useremail, userpwd):
     """
     check manager or not and return if is exist or not
@@ -104,19 +105,18 @@ def userlogin(useremail, userpwd):
     :return: manager or exist or not
     """
     try:
-        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-        cur = conn.cursor()
+        conn, cur = conn_db()
         cur.execute("SELECT * FROM t_users WHERE u_email = %s AND u_pwd = %s", (useremail, userpwd))
         conn.commit()
         user = cur.fetchall()
-        if user[0][4] == 1:
+        if len(user) > 0 and user[0][4] == 1:
             return "manager"
         elif len(user) > 0:
             return "exist"
         else:
             return "not_exist"
     except Exception as excep:
-        logging.error(Exception, ":", excep)
+        logging.error("Userlogin :", excep)
         return
 
 
@@ -129,8 +129,7 @@ def gameinfo():
     useremail = request.cookies.get("useremail")
     if useremail:
         try:
-            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-            cur = conn.cursor()
+            conn, cur = conn_db()
             sql_user = "SELECT u_game_end FROM t_users WHERE u_email = %s;"
             cur.execute(sql_user, useremail)
             game_end = cur.fetchall()[0][0]
@@ -147,7 +146,7 @@ def gameinfo():
                 return jsonify({"msg": "no data"})
 
         except Exception as excep:
-            logging.error(Exception, ":", excep)
+            logging.error("Gameinfo :", excep)
             return jsonify({"msg": "no data"})
     else:
         return jsonify({"msg": "用户未登录"})
@@ -171,8 +170,7 @@ def gametags():
                           useremail, pkgname, appid, tagsname, tagsvalue, game_index)
             if game_index == "10":
                 try:
-                    conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-                    cur = conn.cursor()
+                    conn, cur = conn_db()
                     # save tags of this user
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
@@ -202,12 +200,11 @@ def gametags():
                     else:
                         return jsonify({"msg": "no data"})
                 except Exception as excep:
-                    logging.error(Exception, ":", excep)
+                    logging.error("Gametags :", excep)
                     return jsonify({"msg": "sql error"})
             else:
                 try:
-                    conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-                    cur = conn.cursor()
+                    conn, cur = conn_db()
                     # save game tags of this user
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
@@ -223,7 +220,7 @@ def gametags():
                     conn.commit()
                     return jsonify({"msg": "success"})
                 except Exception as excep:
-                    logging.error(Exception, ":", excep)
+                    logging.error("Gametags :", excep)
                     return jsonify({"msg": "sql error"})
         else:
             return jsonify({"msg": "用户未登录"})
@@ -242,8 +239,7 @@ def softinfo():
 
     if useremail:
         try:
-            conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-            cur = conn.cursor()
+            conn, cur = conn_db()
             sql_user = "SELECT u_soft_end FROM t_users WHERE u_email = %s"
             cur.execute(sql_user, useremail)
             soft_end = cur.fetchall()[0][0]
@@ -284,8 +280,7 @@ def softtags():
                           useremail, pkgname, appid, tagsname, tagsvalue, soft_index)
             if soft_index == "10":
                 try:
-                    conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-                    cur = conn.cursor()
+                    conn, cur = conn_db()
                     # save soft tags of this user
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
@@ -315,12 +310,11 @@ def softtags():
                     else:
                         return jsonify({"msg": "no data"})
                 except Exception as excep:
-                    logging.error(Exception, ":", excep)
+                    logging.error("Softtags :", excep)
                     return jsonify({"msg": "sql error"})
             else:
                 try:
-                    conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-                    cur = conn.cursor()
+                    conn, cur = conn_db()
                     # save soft tags of this user
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
@@ -337,7 +331,7 @@ def softtags():
                     logging.debug("success")
                     return jsonify({"msg": "success"})
                 except Exception as excep:
-                    logging.error(Exception, ":", excep)
+                    logging.error("Softtags :", excep)
                     return jsonify({"msg": "sql error"})
         else:
             return jsonify({"msg": "用户未登录"})
@@ -354,8 +348,7 @@ def userinfo():
     :return: user info if exist
     """
     if request.method == "GET":
-        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
-        cur = conn.cursor()
+        conn, cur = conn_db()
         sql = "SELECT u_email, u_name, u_pwd, u_manager FROM t_users"
         cur.execute(sql)
         user = cur.fetchall()

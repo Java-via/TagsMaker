@@ -7,6 +7,8 @@
 # SDB_PWD = "mimadba_apps"
 # SDB_CHARSET = "utf8"
 
+import pymysql
+
 # ----local----
 DB_HOST = "192.168.2.43"
 DB_APPDB = "app_db"
@@ -15,3 +17,8 @@ DB_USER = "root"
 DB_PWD = "123"
 DB_CHARSET = "utf8"
 
+
+def conn_db():
+    conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
+    cur = conn.cursor()
+    return conn, cur

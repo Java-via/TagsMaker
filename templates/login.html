@@ -44,9 +44,9 @@
                     <label for="userPwd" class="sr-only">密码</label>
                     <input type="password" id="userPwd" name="userPwd" class="form-control" placeholder="请输入密码" required="">
                     <div class="checkbox">
-                        <!--<label>-->
-                            <!--<input type="checkbox" value="remember-me"> 记住我-->
-                        <!--</label>-->
+                        <label>
+                            <input type="checkbox" value="remember-me" id="remember_me" checked="checked"> 记住我
+                        </label>
                     </div>
                     <button  id="login" class="btn btn-sm btn-primary btn-block" style="font-size: large" type="button">登录</button>
                 </form>
@@ -71,18 +71,23 @@
 
     <script defer="defer" type="text/javascript">
     $('#login').click(function () {
-        {
-            var data = {};
-            data = $('#login_form').serialize();
-        }
+//        {
+//            var user = {};
+//            user = $('#login_form').serialize();
+//            var remember = $("#remember_me").val();
+//        }
 
         $.ajax({
             url : "/login",
             dataType : "json",
-            data : data,
+            data :{
+                user: $('#login_form').serialize(),
+                remember: $("#remember_me").val()
+            } ,
             type : "POST",
             beforeSend: function () {
-
+//                console.log(user);
+//                console.log($("#remember_me").val());
             },
             success: function (data) {
                 var type = data;
