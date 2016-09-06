@@ -5,7 +5,7 @@ this model is aimed to route
 """
 import logging
 from flask import Flask, render_template
-from flask import request, jsonify, make_response
+from flask import request, jsonify, make_response, session
 from tagsconf import *
 from db_config import *
 
@@ -81,20 +81,27 @@ def login():
     """
     if request.method == 'POST':
         print("request.from : %s" % request.form)
+        print("test1 : %s" % request.form.get("user"))
+        print("test2 : %s" % request.form.get("remember"))
 
         user_email = request.form.get("userEmail")
         user_pwd = request.form.get("userPwd")
+        user_rem = request.form.get("remember")
         logging.debug("user_email = %s, user_pwd = %s", user_email, user_pwd)
 
-    logging.debug("userlogin = %s", userlogin(user_email, user_pwd))
-    if userlogin(user_email, user_pwd) == "manager":
-        return jsonify({"msg": "manager"})
-    elif userlogin(user_email, user_pwd) == "exist":
-        resp = make_response(jsonify({"msg": "success"}))
-        resp.set_cookie("useremail", user_email)
-        return resp
+        logging.debug("userlogin = %s", userlogin(user_email, user_pwd))
+        if userlogin(user_email, user_pwd) == "manager":
+            return jsonify({"msg": "manager"})
+        elif userlogin(user_email, user_pwd) == "exist" and user_rem:
+            session["useremail"] = user_email
+            session["userpwd"] = user_pwd
+            resp = make_response(jsonify({"msg": "success"}))
+            resp.set_cookie("useremail", user_email)
+            return resp
+        else:
+            return jsonify({"msg": "fail"})
     else:
-        return jsonify({"msg": "fail"})
+        return jsonify({"msg": "bad request"})
 
 
 def userlogin(useremail, userpwd):

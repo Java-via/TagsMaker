@@ -81,7 +81,8 @@
             url : "/login",
             dataType : "json",
             data :{
-                user: $('#login_form').serialize(),
+                userEmail: $('#userEmail').val(),
+                userPwd: $('#userPwd').val(),
                 remember: $("#remember_me").val()
             } ,
             type : "POST",
