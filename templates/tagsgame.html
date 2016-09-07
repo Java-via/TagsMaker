@@ -23,21 +23,21 @@
 <div class="site-wrapper">
     <div class="site-wrapper-inner">
         <div class="cover-container">
-            <div class="masthead clearfix">
-                <div class="inner">
-                    <h3 class="masthead-brand">贴标签-游戏</h3>
+            <div class="page-header" style="height: 35px">
+                <!--<div class="inner">-->
+                    <h3 class="masthead-brand"><a href="./tagsbegin">贴标签-游戏</a></h3>
                     <nav>
                         <ul class="nav masthead-nav">
-                            <li class="active"><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
-                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                            <li><label id="user_name"></label></li>
+                            <li><label><a href="./logout">退出登录</a></label></li>
                             <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
                         </ul>
                     </nav>
-                </div>
+                <!--</div>-->
             </div>
 
             <div class="row">
-                <div class="col-lg-12" style="padding-top: 80px">
+                <div class="col-lg-12" style="padding-top: 2px">
                     <img id="app_img" src="#" style="height:100px; width: 100px ">
                 </div>
 
@@ -121,6 +121,7 @@
 
             },
             success: function (data) {
+                $("#user_name").text(data.username);
                 if (data.msg.toString() == "has data") {
                     if (firstload == 0) {
                         console.log(firstload);

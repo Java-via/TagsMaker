@@ -28,8 +28,8 @@
                     <h3 class="masthead-brand">贴标签</h3>
                     <nav>
                         <ul class="nav masthead-nav">
-                            <li class="active"><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
-                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                            <li><label id="user_name"></label></li>
+                            <li><label><a href="./logout">退出登录</a></label></li>
                             <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
                         </ul>
                     </nav>
@@ -55,13 +55,39 @@
     </div>
 </div>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../static/js/jquery.min.js"></script>
-    <script src="../static/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+<script defer="defer" type="text/javascript">
+    window.onload = function () {
+        $.ajax({
+            url: "/getusername",
+            dataType: "json",
+            async: false,
+            type: "GET",
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                console.log(data);
+                $("#user_name").text("hello, " + data.username);
+
+            },
+            complete: function () {
+
+            },
+            error: function () {
+
+            }
+        })
+
+    }
+
+</script>
 
 
 </body>

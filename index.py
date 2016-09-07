@@ -34,6 +34,13 @@ def sig():
     login html
     :return:
     """
+    if session:
+        user_email = session["useremail"]
+        user_pwd = session["userpwd"]
+        if user_email and user_pwd:
+            is_exist = userlogin(user_email, user_pwd)
+            if is_exist == "exist":
+                return render_template("tagsbegin.html")
     return render_template("login.html")
 
 
@@ -80,13 +87,11 @@ def login():
     :return:
     """
     if request.method == 'POST':
-        print("request.from : %s" % request.form)
-        print("test1 : %s" % request.form.get("user"))
-        print("test2 : %s" % request.form.get("remember"))
 
         user_email = request.form.get("userEmail")
         user_pwd = request.form.get("userPwd")
         user_rem = request.form.get("remember")
+        print("Rem is %s" % user_rem)
         logging.debug("user_email = %s, user_pwd = %s", user_email, user_pwd)
 
         logging.debug("userlogin = %s", userlogin(user_email, user_pwd))
@@ -95,6 +100,10 @@ def login():
         elif userlogin(user_email, user_pwd) == "exist" and user_rem:
             session["useremail"] = user_email
             session["userpwd"] = user_pwd
+            resp = make_response(jsonify({"msg": "success"}))
+            resp.set_cookie("useremail", user_email)
+            return resp
+        elif userlogin(user_email, user_pwd) == "exist":
             resp = make_response(jsonify({"msg": "success"}))
             resp.set_cookie("useremail", user_email)
             return resp
@@ -127,6 +136,19 @@ def userlogin(useremail, userpwd):
         return
 
 
+@app.route("/getusername")
+def get_user_name():
+    useremail = request.cookies.get("useremail")
+    return jsonify({"username": useremail[0:-10]})
+
+
+@app.route("/logout")
+def logout():
+    session.pop("useremail", None)
+    session.pop("userpwd", None)
+    return render_template("login.html")
+
+
 @app.route("/gameinfo", methods=["POST", "GET"])
 def gameinfo():
     """
@@ -148,13 +170,13 @@ def gameinfo():
             apps = cur.fetchall()
 
             if len(apps) > 0:
-                return jsonify({"msg": "has data", "apps": apps, "tags": config_tags_game})
+                return jsonify({"username": useremail[0: -10], "msg": "has data", "apps": apps, "tags": config_tags_game})
             else:
-                return jsonify({"msg": "no data"})
+                return jsonify({"username": useremail[0: -10], "msg": "no data"})
 
         except Exception as excep:
             logging.error("Gameinfo :", excep)
-            return jsonify({"msg": "no data"})
+            return jsonify({"username": useremail[0: -10], "msg": "no data"})
     else:
         return jsonify({"msg": "用户未登录"})
 
@@ -258,13 +280,13 @@ def softinfo():
             apps = cur.fetchall()
 
             if len(apps) > 0:
-                return jsonify({"msg": "has data", "apps": apps, "tags": config_tags_soft})
+                return jsonify({"username": useremail[0: -10], "msg": "has data", "apps": apps, "tags": config_tags_soft})
             else:
-                return jsonify({"msg": "no data"})
+                return jsonify({"username": useremail[0: -10], "msg": "no data"})
 
         except Exception as excep:
             logging.error("Softinfo :", excep)
-            return jsonify({"msg": "no data"})
+            return jsonify({"username": useremail[0: -10], "msg": "no data"})
     else:
         return jsonify({"msg": "用户未登录"})
 
@@ -366,4 +388,5 @@ def userinfo():
             return jsonify({"msg": "have users", "users": user})
 
 if __name__ == "__main__":
+    app.secret_key = "some secret key"
     app.run(debug=True, host="0.0.0.0")
