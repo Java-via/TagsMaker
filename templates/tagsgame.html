@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- saved from url=(0037)http://v3.bootcss.com/examples/cover/ -->
-<html lang="zh-CN">
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -73,11 +73,101 @@
 
             <h2>&nbsp;</h2>
             <div id="tags" class="row">
+                <div class='col-lg-12' id='gender' style='text-align: left'>
+                    <label id='label_gender' class="label" style="font-size: 15px"> 性别偏好&nbsp</label>
+                    <input id="input_gender_male" type="radio" name="gender" value="male"> 男&nbsp</input>
+                    <input id="input_gender_female" type="radio" name="gender" value="female"> 女&nbsp</input>
+                    <input id="input_gender_all" type="radio" name="gender" value="all"> 无偏向&nbsp</input>
+                </div>
+                <div class='col-lg-12' id='marital' style='text-align: left'>
+                    <label id='label_marital' class="label" style="font-size: 15px"> 婚姻偏好&nbsp</label>
+                    <input id="input_marital_married" type="radio" name="marital" value="married"> 已婚&nbsp</input>
+                    <input id="input_marital_unmarried" type="radio" name="marital" value="unmarried"> 未婚&nbsp</input>
+                    <input id="input_marital_all" type="radio" name="marital" value="all"> 无偏向</input>
+                </div>
+                <div class='col-lg-12' id='havecar' style='text-align: left'>
+                    <label id='label_havecar' class="label" style="font-size: 15px"> 车辆状况&nbsp</label>
+                    <input id="input_havecar_owncar" type="radio" name="havecar" value="owncar"> 有车&nbsp</input>
+                    <input id="input_havercar_nocar" type="radio" name="havecar" value="nocar"> 无车&nbsp</input>
+                    <input id="input_havecar_all" type="radio" name="havecar" value="all"> 无偏向</input>
+                </div>
+                <div class='col-lg-12' id='degree' style='text-align: left'>
+                    <label id='label_degree' class="label" style="font-size: 15px"> 学历偏好&nbsp</label>
+                    <input id="input_degree_middle" type="radio" name="degree" value="middle"> 小学/初中&nbsp</input>
+                    <input id="input_degree_high" type="radio" name="degree" value="high"> 高中/中专/大专&nbsp</input>
+                    <input id="input_degree_university" type="radio" name="degree" value="university"> 大学及以上</input>
+                    <input id="input_degree_all" type="radio" name="degree" value="all"> 无偏向</input>
+                </div>
+                <div class='col-lg-12' id='age' style='text-align: left'>
+                    <div>
+                        <label id='label_age' class="label" style="font-size: 15px"> 年龄偏好&nbsp</label>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_age_teen" type="checkbox" name="age" value="teen"> 18岁以下&nbsp</input>
+                        <input id="input_age_youth" type="checkbox" name="age" value="youth"> 18-25岁&nbsp</input>
+                        <input id="input_age_oldyouth" type="checkbox" name="age" value="old_youth"> 26-35岁&nbsp</input>
+                        <input id="input_age_earthmid" type="checkbox" name="age" value="earth_mid"> 36-45岁&nbsp</input>
+                        <input id="input_age_overmid" type="checkbox" name="age" value="over_mid"> 45岁以上&nbsp</input>
+                        <input id="input_age_all" type="checkbox" name="age" value="all"> 无偏向&nbsp</input>
+                    </div>
+                </div>
+                <h6>&nbsp&nbsp</h6>
+                <div class='col-lg-12' id='theme' style='text-align: left'>
+                    <div>
+                        <label id='label_theme' class="label" style="font-size: 15px"> 题材偏好&nbsp</label>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_theme_xiyou" type="checkbox" name="theme" value="xiyou"> 西游&nbsp</input>
+                        <input id="input_theme_shuihu" type="checkbox" name="theme" value="shuihu"> 水浒&nbsp</input>
+                        <input id="input_theme_sanguo" type="checkbox" name="theme" value="sanguo"> 三国&nbsp</input>
+                        <input id="input_theme_wuxia" type="checkbox" name="theme" value="wuxia"> 武侠&nbsp</input>
+                        <input id="input_theme_xiuxian" type="checkbox" name="theme" value="xiuxian"> 修仙玄幻&nbsp</input>
+                        <input id="input_theme_zhongguo" type="checkbox" name="theme" value="zhongguo"> 中国古典神话&nbsp</input>
+                        <input id="input_theme_xifang" type="checkbox" name="theme" value="xifang"> 西方神话&nbsp</input>
+                        <input id="input_theme_erzhan" type="checkbox" name="theme" value="erzhan"> 二战&nbsp</input>
+                        <input id="input_theme_xiandai" type="checkbox" name="theme" value="xiandai"> 现代战争&nbsp</input>
+
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_theme_jiangshi" type="checkbox" name="theme" value="jiangshi"> 僵尸&nbsp</input>
+                        <input id="input_theme_dongman" type="checkbox" name="theme" value="dongman"> 动漫&nbsp</input>
+                        <input id="input_theme_yingshi" type="checkbox" name="theme" value="yingshi"> 影视&nbsp</input>
+                        <input id="input_theme_zongyi" type="checkbox" name="theme" value="zongyi"> 综艺&nbsp</input>
+                        <input id="input_theme_kehuan" type="checkbox" name="theme" value="kehuan"> 科幻&nbsp</input>
+                        <input id="input_theme_moshou" type="checkbox" name="theme" value="moshou"> 魔兽&nbsp</input>
+                        <input id="input_theme_mohuan" type="checkbox" name="theme" value="mohuan"> 魔幻&nbsp</input>
+                        <input id="input_theme_dota" type="checkbox" name="theme" value="dota"> DOTA/LOL&nbsp</input>
+                        <input id="input_theme_hanghai" type="checkbox" name="theme" value="hanghai"> 航海&nbsp</input>
+                        <input id="input_theme_tiyu" type="checkbox" name="theme" value="tiyu"> 体育&nbsp</input>
+                        <input id="input_theme_all" type="checkbox" name="theme" value="all"> 无偏向&nbsp</input>
+                    </div>
+                </div>
+                <h6>&nbsp&nbsp</h6>
+                <div class='col-lg-12' id='style' style='text-align: left'>
+                    <div>
+                        <label id='label_style' class="label" style="font-size: 15px"> 风格偏好&nbsp</label>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_style_shuimo" type="checkbox" name="style" value="shuimo"> 水墨&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</input>
+                        <input id="input_style_rihan" type="checkbox" name="style" value="rihan"> 日韩风&nbsp&nbsp&nbsp&nbsp&nbsp</input>
+                        <input id="input_style_ribendongman" type="checkbox" name="style" value="ribendongman"> 日本动漫&nbsp</input>
+                        <input id="input_style_oumeidongman" type="checkbox" name="style" value="oumeidongman"> 欧美动漫&nbsp</input>
+                        <input id="input_style_Qbanhuafeng" type="checkbox" name="style" value="Qbanhuafeng"> Q版画风&nbsp</input>
+                        <input id="input_style_xiangsu" type="checkbox" name="style" value="xiangsu"> 像素风格&nbsp</input>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_style_baoli" type="checkbox" name="style" value="baoli"> 暴力血腥&nbsp</input>
+                        <input id="input_style_oumeimohuan" type="checkbox" name="style" value="oumeimohuan"> 欧美魔幻&nbsp</input>
+                        <input id="input_style_xieshi" type="checkbox" name="style" value="xieshi"> 写实&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</input>
+                        <input id="input_style_zhongguodongman" type="checkbox" name="style" value="zhongguodongman"> 中国动漫&nbsp</input>
+                        <input id="input_style_all" type="checkbox" name="style" value="all"> 无偏向&nbsp</input>
+                    </div>
+                </div>
+
             </div>
             <h2>&nbsp;</h2>
             <div class="row">
                 <div class="col-lg-4">
-                    <!--<button type="button" id="app_top" class="btn btn-info">上一个</button>-->
                 </div>
                 <!--<div class="col-lg-2"></div>-->
                 <div class="col-lg-4">
@@ -111,7 +201,6 @@
     var tags;
     var firstload = 0;
     window.onload = function () {
-
         $.ajax({
             url: "/gameinfo",
             dataType: "json",
@@ -123,41 +212,9 @@
             success: function (data) {
                 $("#user_name").text(data.username);
                 if (data.msg.toString() == "has data") {
-                    if (firstload == 0) {
-                        console.log(firstload);
-                        tags = data.tags;
-                        for (key in tags) {
-                            if (key.indexOf("key") >= 0) {
-                                var tag_div = "<div class='col-lg-12' id='" + key + "'; style='text-align: left'></div>";
-                                $('#tags').append(tag_div);
-                                var i = 0;
-                                for (n_key in tags[key]) {
-                                    var tag_label = "<label id='" + "label_" + key + i + "'>" + tags[key][n_key] + "&nbsp</label>";
-                                    $("#" + key).append(tag_label);
-                                    $("#label_" + n_key + i).attr("class", "label");
-                                    $("#label_" + n_key + i).attr("style", "font-size: 15px");
-                                    i = i + 1;
-                                    var j = 0;
-                                    // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                                    for (v_key in tags[n_key]) {
-                                        // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                                        var tag_input = "<input id='" + "input_" + n_key + j + "'>" + tags[n_key][v_key] + "&nbsp";
-                                        $("#" + key).append(tag_input);
-                                        $("#input_" + n_key + j).attr("type", "radio");
-                                        $("#input_" + n_key + j).attr("name", n_key);
-                                        $("#input_" + n_key + j).attr("value", v_key);
-                                        j = j + 1;
-                                    }
-                                }
-                            }
-                        }
-                        firstload += 1;
-                    }
-
                     apps = data.apps;
 
                     var app = apps[index];
-                    console.log(app);
                     $('#app_pkgname').text(app[0]);
                     $('#app_id').text(app[7]);
                     $('#app_name').text(app[1]);
@@ -195,35 +252,43 @@
         });
 
         $("#app_next").click(function () {
-            var tagsinfo;
-            tagsinfo = [];
-            for (key in tags) {
-                if (key.indexOf("key") >= 0) {
-                    for (n_key in tags[key]) {
-                        // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                        if ($("input[name='" + n_key + "']:checked").length == 0) {
-                            alert("还未填写完整，不能提交");
-                            return;
-                        }
-                        tagsinfo.push({key: n_key, value: $("input[name='" + n_key + "']:checked").val()});
-                        for (v_key in tags[n_key]) {
-                            // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                        }
-                    }
+            var tagsname, tagsvalue;
+            var gender = $("input[name=gender]:checked").val();
+            $("input[name=gender]").removeAttr("checked");
+            var marital = $("input[name=marital]:checked").val();
+            $("input[name=marital]").removeAttr("checked");
+            var havecar = $("input[name=havecar]:checked").val();
+            $("input[name=havecar]").removeAttr("checked");
+            var degree = $("input[name=degree]:checked").val();
+            $("input[name=degree]").removeAttr("checked");
+
+            var age_count = $("input[name=age]").size();
+            var style_count = $("input[name=style]").size();
+            var theme_count = $("input[name=theme]").size();
+            var age = "";
+            var style = "";
+            var theme = "";
+            for(var iage=0; iage < age_count; iage++) {
+                if($("input[name=age]").get(iage).checked) {
+                    age += $("input[name=age]").get(iage).value + ";";
                 }
             }
 
-            var tagsname = "";
-            var tagsvalue = "";
-            for (var idx = 0; idx < tagsinfo.length; idx++) {
-                if (idx < (tagsinfo.length - 1)) {
-                    tagsname += tagsinfo[idx].key + ",";
-                    tagsvalue += tagsinfo[idx].value + ",";
-                } else {
-                    tagsname += tagsinfo[idx].key;
-                    tagsvalue += tagsinfo[idx].value;
+            for(var istyle=0; istyle < style_count; istyle++) {
+                if($("input[name=style]").get(istyle).checked) {
+                    style += $("input[name=style]").get(istyle).value + ";";
                 }
             }
+            for(var itheme=0; itheme < theme_count; itheme++) {
+                if($("input[name=theme]").get(itheme).checked) {
+                    theme += $("input[name=theme]").get(itheme).value + ";";
+                }
+            }
+            $("input[name=age]").attr("checked", false);
+            $("input[name=style]").attr("checked", false);
+            $("input[name=theme]").attr("checked", false);
+            tagsname = "gender,marital,havecar,degree,age,style,theme";
+            tagsvalue = gender + "," + marital + "," + havecar + "," + degree + "," + age + "," + style + "," + theme;
 
             $.ajax({
                 url: "/gametags",
@@ -256,21 +321,7 @@
 
                         index = index + 1;
 
-                        for (key in tags) {
-                            if (key.indexOf("key") >= 0) {
-                                var i = 0;
-                                for (n_key in tags[key]) {
-                                    i = i + 1;
-                                    var j = 0;
-                                    // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                                    for (v_key in tags[n_key]) {
-                                        // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                                        $("input[name=" + n_key + "]:checked").prop("checked", false);
-                                        j = j + 1;
-                                    }
-                                }
-                            }
-                        }
+
                     } else if (data.msg.toString() == "success") {
                         var app = apps[index];
                         $('#app_pkgname').text(app[0]);
@@ -284,21 +335,6 @@
 
                         index = index + 1;
 
-                        for (key in tags) {
-                            if (key.indexOf("key") >= 0) {
-                                var i = 0;
-                                for (n_key in tags[key]) {
-                                    i = i + 1;
-                                    var j = 0;
-                                    // tags[key][n_key]是label显示的汉字（如：性别偏好）
-                                    for (v_key in tags[n_key]) {
-                                        // n_key是radio的name值，v_key是radio的value值，tags[n_key][v_key]是每个radio显示的汉字
-                                        $("input[name=" + n_key + "]:checked").prop("checked", false);
-                                        j = j + 1;
-                                    }
-                                }
-                            }
-                        }
                     } else if (data.msg.toString() == "用户未登录"){
                         alert(data.msg.toString());
                         window.location.href = "./sig"

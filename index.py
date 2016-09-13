@@ -204,7 +204,8 @@ def gametags():
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
                     for idx in range(0, len(tagsname)):
-                        cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                        cur.execute(sql, (useremail, pkgname,
+                                          tagsname[idx].replace(";", "\t"), tagsvalue[idx].replace(";", "\t")))
                         logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
                         conn.commit()
 
@@ -238,7 +239,8 @@ def gametags():
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
                     for idx in range(0, len(tagsname)):
-                        cur.execute(sql, (useremail, pkgname, tagsname[idx], tagsvalue[idx]))
+                        cur.execute(sql, (useremail, pkgname,
+                                          tagsname[idx].replace(";", "\t"), tagsvalue[idx].replace(";", "\t")))
                         logging.debug("save : %s, %s, %s, %s", useremail, pkgname, tagsname[idx], tagsvalue[idx])
                         conn.commit()
 
