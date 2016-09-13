@@ -200,6 +200,9 @@ def gametags():
             if game_index == "10":
                 try:
                     conn, cur = conn_db()
+                    # update count in t_tags_apps_test
+                    sql_update_count = "UPDATE t_tags_apps_test SET a_count = a_count + 1 WHERE a_pkgname = %s;"
+                    cur.execute(sql_update_count, pkgname)
                     # save tags of this user
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
@@ -235,6 +238,9 @@ def gametags():
             else:
                 try:
                     conn, cur = conn_db()
+                    # update count in t_tags_apps_test
+                    sql_update_count = "UPDATE t_tags_apps_test SET a_count = a_count + 1 WHERE a_pkgname = %s;"
+                    cur.execute(sql_update_count, pkgname)
                     # save game tags of this user
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
                           "VALUES (%s, %s, %s, %s)"
