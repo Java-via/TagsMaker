@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://v3.bootcss.com/examples/cover/ -->
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/ic.jpg">
+
+    <title>贴标签-游戏</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/cover.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
+        <div class="cover-container">
+            <div class="page-header" style="height: 35px">
+                <!--<div class="inner">-->
+                    <h3 class="masthead-brand"><a href="./tagsbegin">贴标签-游戏</a></h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li><label id="user_name"></label></li>
+                            <li><label><a href="./logout">退出登录</a></label></li>
+                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                        </ul>
+                    </nav>
+                <!--</div>-->
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12" style="padding-top: 2px">
+                    <img id="app_img" src="#" style="height:100px; width: 100px ">
+                </div>
+
+                <div class="col-lg-12">
+                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">游戏名称</a></div>
+                    <label id="app_pkgname" style="display: none"></label>
+                    <label id="app_id" style="display: none"></label>
+                </div>
+            </div>
+            <h2></h2>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    游戏关键词
+                </div>
+                <div class="col-lg-12" id="app_tags">
+                    关键词1 关键词2 关键词3
+                </div>
+            </div>
+            <h4>&nbsp;</h4>
+            <div class="row">
+                <div class="col-lg-12">游戏描述
+                </div>
+                <div class="col-lg-12" id="app_desc" style="text-align:justify">
+                    游戏详情描述
+                </div>
+                <button class="btn btn-link btn-sm" id="show_ori">查看原网页</button>
+                <button class="btn btn-link btn-sm" id="hidden_ori" style="display: none">隐藏原网页</button>
+                <div class="col-lg-12">
+                    <iframe id="app_iframe" src="#" style="height: 600px; width: 500px; display: none;" scrolling="yes">原网页</iframe>
+                </div>
+            </div>
+
+            <h2>&nbsp;</h2>
+            <div id="tags" class="row">
+                <div class='col-lg-12' id='gender' style='text-align: left'>
+                    <label id='label_gender' class="label" style="font-size: 15px"> 性别偏好&nbsp</label>
+                    <input id="input_gender_male" type="radio" name="gender" value="male"> 男&nbsp</input>
+                    <input id="input_gender_female" type="radio" name="gender" value="female"> 女&nbsp</input>
+                    <input id="input_gender_all" type="radio" name="gender" value="all"> 无偏向&nbsp</input>
+                </div>
+                <div class='col-lg-12' id='marital' style='text-align: left'>
+                    <label id='label_marital' class="label" style="font-size: 15px"> 婚姻偏好&nbsp</label>
+                    <input id="input_marital_married" type="radio" name="marital" value="married"> 已婚&nbsp</input>
+                    <input id="input_marital_unmarried" type="radio" name="marital" value="unmarried"> 未婚&nbsp</input>
+                    <input id="input_marital_all" type="radio" name="marital" value="all"> 无偏向</input>
+                </div>
+                <div class='col-lg-12' id='havecar' style='text-align: left'>
+                    <label id='label_havecar' class="label" style="font-size: 15px"> 车辆状况&nbsp</label>
+                    <input id="input_havecar_owncar" type="radio" name="havecar" value="owncar"> 有车&nbsp</input>
+                    <input id="input_havercar_nocar" type="radio" name="havecar" value="nocar"> 无车&nbsp</input>
+                    <input id="input_havecar_all" type="radio" name="havecar" value="all"> 无偏向</input>
+                </div>
+                <div class='col-lg-12' id='degree' style='text-align: left'>
+                    <label id='label_degree' class="label" style="font-size: 15px"> 学历偏好&nbsp</label>
+                    <input id="input_degree_middle" type="radio" name="degree" value="middle"> 小学/初中&nbsp</input>
+                    <input id="input_degree_high" type="radio" name="degree" value="high"> 高中/中专/大专&nbsp</input>
+                    <input id="input_degree_university" type="radio" name="degree" value="university"> 大学及以上</input>
+                    <input id="input_degree_all" type="radio" name="degree" value="all"> 无偏向</input>
+                </div>
+                <div class='col-lg-12' id='age' style='text-align: left'>
+                    <div>
+                        <label id='label_age' class="label" style="font-size: 15px"> 年龄偏好&nbsp</label>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_age_teen" type="checkbox" name="age" value="teen"> 18岁以下&nbsp</input>
+                        <input id="input_age_youth" type="checkbox" name="age" value="youth"> 18-25岁&nbsp</input>
+                        <input id="input_age_oldyouth" type="checkbox" name="age" value="old_youth"> 26-35岁&nbsp</input>
+                        <input id="input_age_earthmid" type="checkbox" name="age" value="earth_mid"> 36-45岁&nbsp</input>
+                        <input id="input_age_overmid" type="checkbox" name="age" value="over_mid"> 45岁以上&nbsp</input>
+                        <input id="input_age_all" type="checkbox" name="age" value="all"> 无偏向&nbsp</input>
+                    </div>
+                </div>
+                <h6>&nbsp&nbsp</h6>
+                <div class='col-lg-12' id='theme' style='text-align: left'>
+                    <div>
+                        <label id='label_theme' class="label" style="font-size: 15px"> 题材偏好&nbsp</label>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_theme_xiyou" type="checkbox" name="theme" value="xiyou"> 西游&nbsp</input>
+                        <input id="input_theme_shuihu" type="checkbox" name="theme" value="shuihu"> 水浒&nbsp</input>
+                        <input id="input_theme_sanguo" type="checkbox" name="theme" value="sanguo"> 三国&nbsp</input>
+                        <input id="input_theme_wuxia" type="checkbox" name="theme" value="wuxia"> 武侠&nbsp</input>
+                        <input id="input_theme_xiuxian" type="checkbox" name="theme" value="xiuxian"> 修仙玄幻&nbsp</input>
+                        <input id="input_theme_zhongguo" type="checkbox" name="theme" value="zhongguo"> 中国古典神话&nbsp</input>
+                        <input id="input_theme_xifang" type="checkbox" name="theme" value="xifang"> 西方神话&nbsp</input>
+                        <input id="input_theme_erzhan" type="checkbox" name="theme" value="erzhan"> 二战&nbsp</input>
+                        <input id="input_theme_xiandai" type="checkbox" name="theme" value="xiandai"> 现代战争&nbsp</input>
+
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_theme_jiangshi" type="checkbox" name="theme" value="jiangshi"> 僵尸&nbsp</input>
+                        <input id="input_theme_dongman" type="checkbox" name="theme" value="dongman"> 动漫&nbsp</input>
+                        <input id="input_theme_yingshi" type="checkbox" name="theme" value="yingshi"> 影视&nbsp</input>
+                        <input id="input_theme_zongyi" type="checkbox" name="theme" value="zongyi"> 综艺&nbsp</input>
+                        <input id="input_theme_kehuan" type="checkbox" name="theme" value="kehuan"> 科幻&nbsp</input>
+                        <input id="input_theme_moshou" type="checkbox" name="theme" value="moshou"> 魔兽&nbsp</input>
+                        <input id="input_theme_mohuan" type="checkbox" name="theme" value="mohuan"> 魔幻&nbsp</input>
+                        <input id="input_theme_dota" type="checkbox" name="theme" value="dota"> DOTA/LOL&nbsp</input>
+                        <input id="input_theme_hanghai" type="checkbox" name="theme" value="hanghai"> 航海&nbsp</input>
+                        <input id="input_theme_tiyu" type="checkbox" name="theme" value="tiyu"> 体育&nbsp</input>
+                        <input id="input_theme_all" type="checkbox" name="theme" value="all"> 无偏向&nbsp</input>
+                    </div>
+                </div>
+                <h6>&nbsp&nbsp</h6>
+                <div class='col-lg-12' id='style' style='text-align: left'>
+                    <div>
+                        <label id='label_style' class="label" style="font-size: 15px"> 风格偏好&nbsp</label>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_style_shuimo" type="checkbox" name="style" value="shuimo"> 水墨&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</input>
+                        <input id="input_style_rihan" type="checkbox" name="style" value="rihan"> 日韩风&nbsp&nbsp&nbsp&nbsp&nbsp</input>
+                        <input id="input_style_ribendongman" type="checkbox" name="style" value="ribendongman"> 日本动漫&nbsp</input>
+                        <input id="input_style_oumeidongman" type="checkbox" name="style" value="oumeidongman"> 欧美动漫&nbsp</input>
+                        <input id="input_style_Qbanhuafeng" type="checkbox" name="style" value="Qbanhuafeng"> Q版画风&nbsp</input>
+                        <input id="input_style_xiangsu" type="checkbox" name="style" value="xiangsu"> 像素风格&nbsp</input>
+                    </div>
+                    <div style="padding-left: 20px">
+                        <input id="input_style_baoli" type="checkbox" name="style" value="baoli"> 暴力血腥&nbsp</input>
+                        <input id="input_style_oumeimohuan" type="checkbox" name="style" value="oumeimohuan"> 欧美魔幻&nbsp</input>
+                        <input id="input_style_xieshi" type="checkbox" name="style" value="xieshi"> 写实&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</input>
+                        <input id="input_style_zhongguodongman" type="checkbox" name="style" value="zhongguodongman"> 中国动漫&nbsp</input>
+                        <input id="input_style_all" type="checkbox" name="style" value="all"> 无偏向&nbsp</input>
+                    </div>
+                </div>
+
+            </div>
+            <h2>&nbsp;</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                </div>
+                <!--<div class="col-lg-2"></div>-->
+                <div class="col-lg-4">
+                    <button type="button" id="app_next" class="btn btn-info">下一个</button>
+                    <!--<button type="button" id="group_next" class="btn btn-info" disabled="disabled">下一组</button>-->
+                </div>
+                <div class="col-lg-4">
+                    <!--<button type="button" id="app_next" class="btn btn-info">下一个</button>-->
+                </div>
+            </div>
+            <div class="footer">
+                <div class="inner">
+                    <p> by Jessie.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+
+<script defer="defer" type="text/javascript">
+    var index = 0;
+    var apps;
+    var tags;
+    var firstload = 0;
+    window.onload = function () {
+        $.ajax({
+            url: "/gameinfo",
+            dataType: "json",
+            async: false,
+            type: "GET",
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                $("#user_name").text(data.username);
+                if (data.msg.toString() == "has data") {
+                    apps = data.apps;
+
+                    var app = apps[index];
+                    $('#app_pkgname').text(app[0]);
+                    $('#app_id').text(app[7]);
+                    $('#app_name').text(app[1]);
+                    $('#app_tags').text(app[3]);
+                    $('#app_iframe').attr("src", app[5]);
+                    $('#app_desc').text(app[2]);
+                    $('#app_url').attr("href ", app[5]);
+                    $('#app_img').attr("src", app[6]);
+                    index = index + 1;
+                }else if (data.msg.toString() == "用户未登录"){
+                    alert(data.msg.toString());
+                    window.location.href = "./sig"
+                } else {
+                    alert(data.msg.toString());
+                }
+            },
+            complete: function () {
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+
+        $("#show_ori").click(function () {
+            $("#app_iframe").show();
+            $("#show_ori").hide();
+            $("#hidden_ori").show();
+        });
+
+        $("#hidden_ori").click(function () {
+            $("#app_iframe").hide();
+            $("#hidden_ori").hide();
+            $("#show_ori").show();
+        });
+
+        $("#app_next").click(function () {
+            var tagsname, tagsvalue;
+            var gender = $("input[name=gender]:checked").val();
+            $("input[name=gender]").removeAttr("checked");
+            var marital = $("input[name=marital]:checked").val();
+            $("input[name=marital]").removeAttr("checked");
+            var havecar = $("input[name=havecar]:checked").val();
+            $("input[name=havecar]").removeAttr("checked");
+            var degree = $("input[name=degree]:checked").val();
+            $("input[name=degree]").removeAttr("checked");
+
+            var age_count = $("input[name=age]").size();
+            var style_count = $("input[name=style]").size();
+            var theme_count = $("input[name=theme]").size();
+            var age = "";
+            var style = "";
+            var theme = "";
+            for(var iage=0; iage < age_count; iage++) {
+                if($("input[name=age]").get(iage).checked) {
+                    age += $("input[name=age]").get(iage).value + ";";
+                }
+            }
+
+            for(var istyle=0; istyle < style_count; istyle++) {
+                if($("input[name=style]").get(istyle).checked) {
+                    style += $("input[name=style]").get(istyle).value + ";";
+                }
+            }
+            for(var itheme=0; itheme < theme_count; itheme++) {
+                if($("input[name=theme]").get(itheme).checked) {
+                    theme += $("input[name=theme]").get(itheme).value + ";";
+                }
+            }
+            $("input[name=age]").attr("checked", false);
+            $("input[name=style]").attr("checked", false);
+            $("input[name=theme]").attr("checked", false);
+            tagsname = "gender,marital,havecar,degree,age,style,theme";
+            tagsvalue = gender + "," + marital + "," + havecar + "," + degree + "," + age + "," + style + "," + theme;
+
+            $.ajax({
+                url: "/gametags",
+                dataType: "json",
+                // async : false,
+                data: {
+                    pkgname: $("#app_pkgname").text(),
+                    appid: $("#app_id").text(),
+                    tagsname: tagsname,
+                    tagsvalue: tagsvalue,
+                    index: index
+                },
+                type: "GET",
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    if (data.msg.toString() == "another ten") {
+                        index = 0;
+                        apps = data.apps;
+                        var app = apps[index];
+                        $('#app_pkgname').text(app[0]);
+                        $('#app_id').text(app[7]);
+                        $('#app_name').text(app[1]);
+                        $('#app_tags').text(app[3]);
+                        $('#app_iframe').attr("src", app[5]);
+                        $('#app_desc').text(app[2]);
+                        $('#app_url').attr("href ", app[5]);
+                        $('#app_img').attr("src", app[6]);
+
+                        index = index + 1;
+
+
+                    } else if (data.msg.toString() == "success") {
+                        var app = apps[index];
+                        $('#app_pkgname').text(app[0]);
+                        $('#app_id').text(app[7]);
+                        $('#app_name').text(app[1]);
+                        $('#app_tags').text(app[3]);
+                        $('#app_iframe').attr("src", app[5]);
+                        $('#app_desc').text(app[2]);
+                        $('#app_url').attr("href ", app[5]);
+                        $('#app_img').attr("src", app[6]);
+
+                        index = index + 1;
+
+                    } else if (data.msg.toString() == "用户未登录"){
+                        alert(data.msg.toString());
+                        window.location.href = "./sig"
+                    } else {
+                        alert(data.msg.toString());
+                    }
+
+                },
+                complete: function () {
+
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        });
+    }
+</script>
+
+</body></html>

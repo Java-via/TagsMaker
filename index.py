@@ -62,22 +62,40 @@ def manager():
     return render_template("manager.html")
 
 
-@app.route("/tagssoft", methods=["POST", "GET"])
-def tagssoft():
+@app.route("/android_tagssoft", methods=["POST", "GET"])
+def android_tagssoft():
     """
     begin with soft
     :return:
     """
-    return render_template("tagssoft.html")
+    return render_template("andr_tagssoft.html")
 
 
-@app.route("/tagsgame", methods=["POST", "GET"])
-def tagsgame():
+@app.route("/android_tagsgame", methods=["POST", "GET"])
+def android_tagsgame():
     """
     begin with game
     :return:
     """
-    return render_template("tagsgame.html")
+    return render_template("andr_tagsgame.html")
+
+
+@app.route("/ios_tagssoft", methods=["POST", "GET"])
+def ios_tagssoft():
+    """
+    begin with soft
+    :return:
+    """
+    return render_template("ios_tagssoft.html")
+
+
+@app.route("/ios_tagsgame", methods=["POST", "GET"])
+def ios_tagsgame():
+    """
+    begin with game
+    :return:
+    """
+    return render_template("ios_tagsgame.html")
 
 
 @app.route("/login", methods=["POST", "GET"])
