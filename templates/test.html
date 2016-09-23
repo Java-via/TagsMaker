@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://v3.bootcss.com/examples/cover/ -->
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/ic.jpg">
+
+    <title>测试</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/cover.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
+        <div class="cover-container">
+            <div class="page-header" style="height: 35px">
+                <!--<div class="inner">-->
+                    <h3 class="masthead-brand"><a href="./tagsbegin">贴标签-游戏</a></h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li><label id="user_name"></label></li>
+                            <li><label><a href="./logout">退出登录</a></label></li>
+                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                        </ul>
+                    </nav>
+                <!--</div>-->
+            </div>
+            <div>
+                <select style="color: black" id="parent">
+                    <option value="0">
+                        游戏类型
+                    </option>
+                </select>
+                <select style="color: black;" id="child">
+                    <option value="0">子选项</option>
+                </select>
+                <button id="btn_sub" class="btn btn-info">确定</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+
+<script defer="defer" type="text/javascript">
+    window.onload = function() {
+        var parent_category = [
+                "休闲游戏", "宝石消除", "动作射击", "儿童游戏", "角色扮演", "经营策略",
+                "跑酷竞速", "棋牌桌游", "塔防守卫", "体育格斗", "网络游戏"
+        ];
+        for(var i=0; i<parent_category.length; i++) {
+            $("#parent").append("<option value='" + (i+1) + "'>" + parent_category[i] + "</option>");
+        }
+
+    };
+    $("#parent").change(function () {
+        var parentid = Number($("#parent").val());
+        var child = {"0": ["子分类"],
+            "1": ["减压", "切东西", "找茬", "答题", "宠物", "益智", "解谜", "音乐节奏", "物理", "休闲", "猜猜看"],
+            "2": ["消除", "宝石", "方块", "泡泡龙", "祖玛", "连连看"],
+            "3": ["3D", "坦克", "射击", "横版", "狙击", "飞行", "空战", "枪战", "动作"],
+            "4": ["拼图", "数学", "智力开发", "识字"],
+            "5": ["ARPG", "三国", "修仙", "养成", "动漫", "即时战斗", "回合制", "武侠", "魔幻", "解谜逃脱"],
+            "6": ["DOTA", "历史", "战争", "战棋", "经营", "策略塔防", "经营模拟", "装扮"],
+            "7": ["摩托", "赛艇", "赛车", "跑酷", "飞机", "模拟驾驶"],
+            "8": ["德州扑克", "斗地主", "桌游", "棋类", "纸牌", "麻将"],
+            "9": ["抢滩登陆", "闯关"],
+            "10": ["其他球类", "台球", "篮球", "网球", "街机", "足球", "桌球", "拳击", "趣味运动", "格斗"],
+            "11": ["RPG", "动作竞技", "卡牌", "策略"]};
+        var select2 = $("#child");
+        var child_length = child[parentid].length;
+        select2.empty();
+        for(var i=0; i < child_length; i++){
+            select2.append("<option value='" + (i+1) + "'>" + child[parentid][i] + "</option>");
+        }
+    });
+    $("#btn_sub").click(function () {
+        console.log($("#parent").find("option:selected").text() + ":" + $("#child").find("option:selected").text());
+    });
+</script>
+
+</body></html>

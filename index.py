@@ -14,9 +14,9 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 
 
-@app.route("/iframe")
+@app.route("/test")
 def iframe():
-    return render_template("iframe.html")
+    return render_template("test.html")
 
 
 @app.route("/")
