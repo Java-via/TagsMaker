@@ -1,1 +1,279 @@
-# _*_ coding: utf-8 _*_
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://v3.bootcss.com/examples/cover/ -->
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/ic.jpg">
+
+    <title>贴标签ios-应用</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/cover.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
+        <div class="cover-container">
+            <div class="page-header" style="height: 35px">
+                <!--<div class="inner">-->
+                    <h3 class="masthead-brand"><a href="./tagsbegin">贴标签ios-应用</a></h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li><label id="user_name"></label></li>
+                            <li><label><a href="./logout">退出登录</a></label></li>
+                            <li><a href="http://v3.bootcss.com/examples/cover/#"></a></li>
+                        </ul>
+                    </nav>
+                <!--</div>-->
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12" style="padding-top: 2px">
+                    <img id="app_img" src="#" style="height:100px; width: 100px ">
+                </div>
+
+                <div class="col-lg-12">
+                    <div id="app_name" style="font-size: large"><a href="#" id="app_url">应用名称</a></div>
+                    <label id="app_pkgname" style="display: none"></label>
+                    <label id="app_id" style="display: none"></label>
+                </div>
+            </div>
+            <h2></h2>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    应用关键词
+                </div>
+                <div class="col-lg-12" id="app_tags">
+                    关键词1 关键词2 关键词3
+                </div>
+            </div>
+            <h4>&nbsp;</h4>
+            <div class="row">
+                <div class="col-lg-12">应用描述
+                </div>
+                <div class="col-lg-12" id="app_desc" style="text-align:justify">
+                    应用详情描述
+                </div>
+                <button class="btn btn-link btn-sm" id="show_ori">查看原网页</button>
+                <button class="btn btn-link btn-sm" id="hidden_ori" style="display: none">隐藏原网页</button>
+                <div class="col-lg-12">
+                    <iframe id="app_iframe" src="#" style="height: 600px; width: 500px; display: none;" scrolling="yes">原网页</iframe>
+                </div>
+            </div>
+
+            <h2>&nbsp;</h2>
+            <div id="tags" class="row">
+                <div class='col-lg-12' id='gender' style='text-align: left'>
+                    <label id='label_gender' class="label" style="font-size: 15px"> 应用类型&nbsp</label>
+                    <select style="color: black" id="parent">
+                        <option value="0">
+                            应用类型
+                        </option>
+                    </select>
+                    <select style="color: black;" id="child">
+                        <option value="0">子选项</option>
+                    </select>
+                </div>
+            </div>
+            <h2>&nbsp;</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                </div>
+                <!--<div class="col-lg-2"></div>-->
+                <div class="col-lg-4">
+                    <button type="button" id="app_next" class="btn btn-info">下一个</button>
+                    <!--<button type="button" id="group_next" class="btn btn-info" disabled="disabled">下一组</button>-->
+                </div>
+                <div class="col-lg-4">
+                    <!--<button type="button" id="app_next" class="btn btn-info">下一个</button>-->
+                </div>
+            </div>
+            <div class="footer">
+                <div class="inner">
+                    <p> by Jessie.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+
+<script defer="defer" type="text/javascript">
+    window.onload = function() {
+        var parent_category = [
+            "网上购物", "旅游出行", "金融理财", "视频",
+            "音乐", "摄影摄像", "资讯阅读", "生活工具",
+            "系统工具", "美化手机", "效率办公", "聊天社交",
+            "电话通讯", "交通导航", "生活服务", "运动健康",
+            "教育培训", "丽人母婴"
+        ];
+        for(var i=0; i<parent_category.length; i++) {
+            $("#parent").append("<option value='" + (i+1) + "'>" + parent_category[i] + "</option>");
+        }
+
+        $("#parent").change(function () {
+            var parentid = Number($("#parent").val());
+            var child = {"0": ["子分类"],
+                "1": ["商城", "导购", "海淘", "团购·优惠券", "网购", "购物"],
+                "2": ["综合旅游服务", "攻略", "酒店·住宿", "周边游", "旅行工具·户外", "地图导航", "购票"],
+                "3": ["投资", "银行", "记账", "支付", "彩票", "理财工具", "股票基金"],
+                "4": ["在线视频", "电视·直播", "真人视频", "短视频", "视频播放器", "其他视频"],
+                "5": ["在线音乐", "电台", "K歌", "铃声", "乐器", "音乐播放器", "其他音乐"],
+                "6": ["相机", "拍视频", "图片美化·滤镜", "图片分享", "相册·图库", "照片美化", "摄像"],
+                "7": ["新闻·资讯", "日报·杂志", "电子书", "听书", "漫画", "搞笑", "百科·问答", "画报", "新闻", "笑话", "娱乐"],
+                "8": ["天气", "美食·菜谱", "日历", "时钟", "扫码", "手工", "手电筒", "计算器", "美食"],
+                "9": ["Wi-Fi", "输入法", "浏览器", "搜索·下载", "安全", "优化", "传输", "root", "系统安全"],
+                "10": ["桌面·主题", "壁纸", "锁屏", "字体", "动态壁纸", "桌面美化", "主题"],
+                "11": ["办公软件", "笔记", "效率", "邮箱", "文件管理", "存储·云盘", "办公"],
+                "12": ["聊天", "交友", "婚恋", "社区", "微博", "匿名", "表情·头像", "社交"],
+                "13": ["电话", "短信", "通讯录", "通讯辅助", "通讯"],
+                "14": ["地图·导航", "交通票务", "公交·火车·航班", "打车", "违章查询"],
+                "15": ["餐厅推荐", "外卖", "生鲜配送", "找阿姨", "洗衣", "做饭", "按摩", "美甲·美容", "租房·短租", "搬家", "买房", "家装", "租车·用车", "代驾", "买车", "养车", "电影", "演出", "求职·招聘", "分类信息", "营业厅", "快递", "其他生活服务"],
+                "16": ["运动·健身", "减肥", "健康", "用药·医疗", "医疗健康"],
+                "17": ["语言学习·单词", "考试·驾考", "词典·翻译", "在线教育", "课程表", "作业", "儿童教育", "考试学习", "驾考"],
+                "18": ["经期·孕期", "育儿社区", "美容·美妆", "母婴"]
+            };
+            var select2 = $("#child");
+            var child_length = child[parentid].length;
+            select2.empty();
+            for(var i=0; i < child_length; i++){
+                select2.append("<option value='" + (i+1) + "'>" + child[parentid][i] + "</option>");
+            }
+        });
+        /*("#btn_sub").click(function () {
+            console.log($("#parent").find("option:selected").text() + ":" + $("#child").find("option:selected").text());
+        });*/
+
+        $.ajax({
+            url: "/ios_softinfo",
+            dataType: "json",
+            async: false,
+            type: "GET",
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                $("#user_name").text(data.username);
+                if (data.msg.toString() == "has data") {
+                    apps = data.apps;
+
+                    var app = apps[index];
+                    $('#app_pkgname').text(app[0]);
+                    $('#app_id').text(app[7]);
+                    $('#app_name').text(app[1]);
+                    $('#app_tags').text(app[3]);
+                    $('#app_iframe').attr("src", app[5]);
+                    $('#app_desc').text(app[2]);
+                    $('#app_url').attr("href ", app[5]);
+                    $('#app_img').attr("src", app[6]);
+                    index = index + 1;
+                }else if (data.msg.toString() == "用户未登录"){
+                    alert(data.msg.toString());
+                    window.location.href = "./sig"
+                } else {
+                    alert(data.msg.toString());
+                }
+            },
+            complete: function () {
+
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+
+        $("#show_ori").click(function () {
+            $("#app_iframe").show();
+            $("#show_ori").hide();
+            $("#hidden_ori").show();
+        });
+
+        $("#hidden_ori").click(function () {
+            $("#app_iframe").hide();
+            $("#hidden_ori").hide();
+            $("#show_ori").show();
+        });
+
+        $("#app_next").click(function () {
+            var classify = $("#parent").find("option:selected").text() + ":" + $("#child").find("option:selected").text();
+            $.ajax({
+                url: "ios_softtags",
+                dataType: "json",
+                data: {
+                    pkgname: $("#app_pkgname").text(),
+                    appid: $("#app_id").text(),
+                    index: index,
+                    classify: classify
+                },
+                type: "GET",
+                beforeSend: function () {
+                    console.log(data);
+
+                },
+                success: function () {
+                    if (data.msg.toString() == "another ten") {
+                        index = 0;
+                        apps = data.apps;
+                        var app = apps[index];
+                        $('#app_pkgname').text(app[0]);
+                        $('#app_id').text(app[7]);
+                        $('#app_name').text(app[1]);
+                        $('#app_tags').text(app[3]);
+                        $('#app_iframe').attr("src", app[5]);
+                        $('#app_desc').text(app[2]);
+                        $('#app_url').attr("href ", app[5]);
+                        $('#app_img').attr("src", app[6]);
+
+                        index = index + 1;
+
+
+                    } else if (data.msg.toString() == "success") {
+                        var app = apps[index];
+                        $('#app_pkgname').text(app[0]);
+                        $('#app_id').text(app[7]);
+                        $('#app_name').text(app[1]);
+                        $('#app_tags').text(app[3]);
+                        $('#app_iframe').attr("src", app[5]);
+                        $('#app_desc').text(app[2]);
+                        $('#app_url').attr("href ", app[5]);
+                        $('#app_img').attr("src", app[6]);
+
+                        index = index + 1;
+
+                    } else if (data.msg.toString() == "用户未登录"){
+                        alert(data.msg.toString());
+                        window.location.href = "./sig"
+                    } else {
+                        alert(data.msg.toString());
+                    }
+
+                },
+                complete: function () {
+
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+    }
+</script>
+
+</body></html>

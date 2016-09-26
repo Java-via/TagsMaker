@@ -182,13 +182,47 @@ def gameinfo():
             game_end = cur.fetchall()[0][0]
 
             sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                  "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                  "FROM t_tags_apps_test WHERE a_platform = 0 AND a_softgame = 'game' AND a_id > %s " \
+                  "ORDER BY a_id LIMIT 10;"
             cur.execute(sql, game_end)
             conn.commit()
             apps = cur.fetchall()
 
             if len(apps) > 0:
-                return jsonify({"username": useremail[0: -10], "msg": "has data", "apps": apps, "tags": config_tags_game})
+                return jsonify({"username": useremail[0: -10], "msg": "has data", "apps": apps})
+            else:
+                return jsonify({"username": useremail[0: -10], "msg": "no data"})
+
+        except Exception as excep:
+            logging.error("Gameinfo :", excep)
+            return jsonify({"username": useremail[0: -10], "msg": "no data"})
+    else:
+        return jsonify({"msg": "用户未登录"})
+
+
+@app.route("/ios_gameinfo", methods=["POST", "GET"])
+def ios_gameinfo():
+    """
+    get ios_game info limit 10
+    :return:
+    """
+    useremail = request.cookies.get("useremail")
+    if useremail:
+        try:
+            conn, cur = conn_db()
+            sql_user = "SELECT u_game_end_ios FROM t_users WHERE u_email = %s;"
+            cur.execute(sql_user, useremail)
+            game_end = cur.fetchall()[0][0]
+
+            sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                  "FROM t_tags_apps_test WHERE a_platform = 1 AND a_softgame = 'game' AND a_id > %s  " \
+                  "ORDER BY a_id LIMIT 10;"
+            cur.execute(sql, game_end)
+            apps = cur.fetchall()
+
+            if len(apps) > 0:
+                return jsonify(
+                    {"username": useremail[0: -10], "msg": "has data", "apps": apps})
             else:
                 return jsonify({"username": useremail[0: -10], "msg": "no data"})
 
@@ -222,8 +256,8 @@ def gametags():
                     sql_update_count = "UPDATE t_tags_apps_test SET a_count = a_count + 1 WHERE a_pkgname = %s;"
                     cur.execute(sql_update_count, pkgname)
                     # save tags of this user
-                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                          "VALUES (%s, %s, %s, %s)"
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue, u_isios) " \
+                          "VALUES (%s, %s, %s, %s, 0)"
                     for idx in range(0, len(tagsname)):
                         cur.execute(sql, (useremail, pkgname,
                                           tagsname[idx].replace(";", "\t"), tagsvalue[idx].replace(";", "\t")))
@@ -242,7 +276,8 @@ def gametags():
                     game_end = cur.fetchall()[0][0]
 
                     sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                          "FROM t_tags_apps_test WHERE a_softgame = 'game' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                          "FROM t_tags_apps_test WHERE a_platform = 0 AND a_softgame = 'game' AND a_id > %s " \
+                          "ORDER BY a_id LIMIT 10;"
                     cur.execute(sql, game_end)
                     conn.commit()
                     apps = cur.fetchall()
@@ -260,8 +295,8 @@ def gametags():
                     sql_update_count = "UPDATE t_tags_apps_test SET a_count = a_count + 1 WHERE a_pkgname = %s;"
                     cur.execute(sql_update_count, pkgname)
                     # save game tags of this user
-                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue) " \
-                          "VALUES (%s, %s, %s, %s)"
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue, u_isios) " \
+                          "VALUES (%s, %s, %s, %s, 1)"
                     for idx in range(0, len(tagsname)):
                         cur.execute(sql, (useremail, pkgname,
                                           tagsname[idx].replace(";", "\t"), tagsvalue[idx].replace(";", "\t")))
@@ -272,6 +307,85 @@ def gametags():
                     sql_end = "UPDATE t_users t1, (SELECT u_game_end AS game_end FROM t_users WHERE u_email = %s)t0 " \
                               "SET t1.u_game_end = %s WHERE u_email = %s;"
                     cur.execute(sql_end, (useremail, appid, useremail))
+                    conn.commit()
+                    return jsonify({"msg": "success"})
+                except Exception as excep:
+                    logging.error("Gametags :", excep)
+                    return jsonify({"msg": "sql error"})
+        else:
+            return jsonify({"msg": "用户未登录"})
+    else:
+        logging.error("trans gametags with wrong request method: %s", request.method)
+        return jsonify({"msg": "bad request"})
+
+
+@app.route("/ios_gametags", methods=["POST", "GET"])
+def ios_gametags():
+    """
+    get tags for game that user given and save it
+    :return:
+    """
+    if request.method == "GET":
+        useremail = request.cookies.get("useremail")
+        if useremail:
+            pkgname = request.args.get("pkgname")
+            appid = request.args.get("appid")
+            classify = request.args.get("classify")
+            game_index = request.args.get("index")
+            logging.debug("useremail = %s, pkgname = %s, appid = %s, tagsname = %s, tagsvalue = %s, index = %s",
+                          useremail, pkgname, appid, "classify", classify, game_index)
+            if game_index == "10":
+                try:
+                    conn, cur = conn_db()
+                    # update count in t_tags_apps_test
+                    sql_update_count = "UPDATE t_tags_apps_test SET a_count = a_count + 1 WHERE a_pkgname = %s;"
+                    cur.execute(sql_update_count, pkgname)
+                    # save tags of this user
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue, u_isios) " \
+                          "VALUES (%s, %s, %s, %s, 1)"
+                    cur.execute(sql, ())
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, "classify", classify)
+
+                    # update endid of this user
+                    sql_end = "UPDATE t_users t1, " \
+                              "(SELECT u_game_end_ios AS game_end FROM t_users WHERE u_email = %s) t0 " \
+                              "SET t1.u_game_end_ios = %s WHERE u_email = %s;"
+                    cur.execute(sql_end, (useremail, appid, useremail))
+                    conn.commit()
+
+                    # select another 10 data
+                    sql_user = "SELECT u_game_end_ios FROM t_users WHERE u_email = %s"
+                    cur.execute(sql_user, useremail)
+                    game_end = cur.fetchall()[0][0]
+
+                    sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                          "FROM t_tags_apps_test WHERE a_platform = 1 AND a_softgame = 'game' AND a_id > %s " \
+                          "ORDER BY a_id LIMIT 10;"
+                    cur.execute(sql, game_end)
+                    conn.commit()
+                    apps = cur.fetchall()
+                    if len(apps) > 0:
+                        return jsonify({"msg": "another ten", "apps": apps})
+                    else:
+                        return jsonify({"msg": "no data"})
+                except Exception as excep:
+                    logging.error("Gametags :", excep)
+                    return jsonify({"msg": "sql error"})
+            else:
+                try:
+                    conn, cur = conn_db()
+                    # update count in t_tags_apps_test
+                    sql_update_count = "UPDATE t_tags_apps_test SET a_count = a_count + 1 WHERE a_pkgname = %s;"
+                    cur.execute(sql_update_count, pkgname)
+                    # save game tags of this user
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue, u_isios) " \
+                          "VALUES (%s, %s, %s, %s, 1)"
+                    cur.execute(sql, (useremail, pkgname, "classify", classify))
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, "classify", classify)
+
+                    # update end of this user
+                    sql_end = "UPDATE t_users SET u_game_end_ios = %s WHERE u_email = %s;"
+                    cur.execute(sql_end, (appid, useremail))
                     conn.commit()
                     return jsonify({"msg": "success"})
                 except Exception as excep:
@@ -300,13 +414,48 @@ def softinfo():
             soft_end = cur.fetchall()[0][0]
 
             sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                  "FROM t_tags_apps_test WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                  "FROM t_tags_apps_test WHERE a_platform = 0 AND a_softgame = 'soft' AND a_id > %s " \
+                  "ORDER BY a_id LIMIT 10;"
             cur.execute(sql, soft_end)
             conn.commit()
             apps = cur.fetchall()
 
             if len(apps) > 0:
                 return jsonify({"username": useremail[0: -10], "msg": "has data", "apps": apps, "tags": config_tags_soft})
+            else:
+                return jsonify({"username": useremail[0: -10], "msg": "no data"})
+
+        except Exception as excep:
+            logging.error("Softinfo :", excep)
+            return jsonify({"username": useremail[0: -10], "msg": "no data"})
+    else:
+        return jsonify({"msg": "用户未登录"})
+
+
+@app.route("/ios_softinfo", methods=["POST", "GET"])
+def ios_softinfo():
+    """
+    get soft info limit 10
+    :return:
+    """
+    useremail = request.cookies.get("useremail")
+
+    if useremail:
+        try:
+            conn, cur = conn_db()
+            sql_user = "SELECT u_soft_end_ios FROM t_users WHERE u_email = %s"
+            cur.execute(sql_user, useremail)
+            soft_end = cur.fetchall()[0][0]
+
+            sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                  "FROM t_tags_apps_test WHERE a_platform = 1 AND a_softgame = 'soft' AND a_id > %s " \
+                  "ORDER BY a_id LIMIT 10;"
+            cur.execute(sql, soft_end)
+            conn.commit()
+            apps = cur.fetchall()
+
+            if len(apps) > 0:
+                return jsonify({"username": useremail[0: -10], "msg": "has data", "apps": apps})
             else:
                 return jsonify({"username": useremail[0: -10], "msg": "no data"})
 
@@ -355,7 +504,8 @@ def softtags():
                     cur.execute(sql_user, useremail)
                     game_end = cur.fetchall()[0][0]
                     sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
-                          "FROM t_tags_apps_test WHERE a_softgame = 'soft' AND a_id > %s ORDER BY a_id LIMIT 10;"
+                          "FROM t_tags_apps_test WHERE a_platform = 0 AND a_softgame = 'soft' AND a_id > %s " \
+                          "ORDER BY a_id LIMIT 10;"
                     cur.execute(sql, game_end)
                     conn.commit()
                     apps = cur.fetchall()
@@ -382,6 +532,79 @@ def softtags():
                     sql_end = "UPDATE t_users t1, (SELECT u_soft_end AS soft_end FROM t_users WHERE u_email = %s)t0 " \
                               "SET t1.u_soft_end = %s WHERE u_email = %s;"
                     cur.execute(sql_end, (useremail, appid, useremail))
+                    conn.commit()
+                    logging.debug("success")
+                    return jsonify({"msg": "success"})
+                except Exception as excep:
+                    logging.error("Softtags :", excep)
+                    return jsonify({"msg": "sql error"})
+        else:
+            return jsonify({"msg": "用户未登录"})
+
+    else:
+        logging.error("trans softtags with wrong request method: %s", request.method)
+        return jsonify({"msg": "bad request"})
+
+
+@app.route("/ios_softtags", methods=["POST", "GET"])
+def ios_softtags():
+    """
+    get tags for soft that user given and save it
+    :return:
+    """
+    if request.method == "GET":
+        useremail = request.cookies.get("useremail")
+        if useremail:
+            pkgname = request.args.get("pkgname")
+            appid = request.args.get("appid")
+            classify = request.args.get("classify")
+            soft_index = request.args.get("index")
+            logging.debug("useremail = %s, pkgname = %s, pkgname = %s, tagsname = %s, tagsvalue = %s, index = %s",
+                          useremail, pkgname, appid, "classify", classify, soft_index)
+            if soft_index == "10":
+                try:
+                    conn, cur = conn_db()
+                    # save soft tags of this user
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue, u_isios) " \
+                          "VALUES (%s, %s, %s, %s, 1)"
+                    cur.execute(sql, (useremail, pkgname, "classify", classify))
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, "classify", classify)
+
+                    # update soft end of this user
+                    sql_end = "UPDATE t_users SET u_soft_end_ios = %s WHERE u_email = %s;"
+                    cur.execute(sql_end, (appid, useremail))
+                    conn.commit()
+
+                    # select another ten soft
+                    sql_user = "SELECT u_soft_end_ios FROM t_users WHERE u_email = %s"
+                    cur.execute(sql_user, useremail)
+                    game_end = cur.fetchall()[0][0]
+                    sql = "SELECT a_pkgname, a_name, a_description, a_defaulttags, a_classify, a_url, a_picurl, a_id " \
+                          "FROM t_tags_apps_test WHERE a_platform = 1 AND a_softgame = 'soft' AND a_id > %s " \
+                          "ORDER BY a_id LIMIT 10;"
+                    cur.execute(sql, game_end)
+                    conn.commit()
+                    apps = cur.fetchall()
+                    if len(apps) > 0:
+                        logging.debug("another ten")
+                        return jsonify({"msg": "another ten", "apps": apps})
+                    else:
+                        return jsonify({"msg": "no data"})
+                except Exception as excep:
+                    logging.error("Softtags :", excep)
+                    return jsonify({"msg": "sql error"})
+            else:
+                try:
+                    conn, cur = conn_db()
+                    # save soft tags of this user
+                    sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue, u_isios) " \
+                          "VALUES (%s, %s, %s, %s, 1)"
+                    cur.execute(sql, (useremail, pkgname, "classify", classify))
+                    logging.debug("save : %s, %s, %s, %s", useremail, pkgname, "classify", classify)
+
+                    # update soft end of this user
+                    sql_end = "UPDATE t_users SET u_soft_end_ios = %s WHERE u_email = %s;"
+                    cur.execute(sql_end, (appid, useremail))
                     conn.commit()
                     logging.debug("success")
                     return jsonify({"msg": "success"})

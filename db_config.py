@@ -21,4 +21,5 @@ DB_CHARSET = "utf8"
 def conn_db():
     conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PWD, db=DB_DB, charset=DB_CHARSET)
     cur = conn.cursor()
+    conn.autocommit(1)
     return conn, cur

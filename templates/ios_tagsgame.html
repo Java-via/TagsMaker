@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../static/ic.jpg">
 
-    <title>贴标签-游戏</title>
+    <title>贴标签ios-游戏</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
         <div class="cover-container">
             <div class="page-header" style="height: 35px">
                 <!--<div class="inner">-->
-                    <h3 class="masthead-brand"><a href="./tagsbegin">贴标签-游戏</a></h3>
+                    <h3 class="masthead-brand"><a href="./tagsbegin">贴标签ios-游戏</a></h3>
                     <nav>
                         <ul class="nav masthead-nav">
                             <li><label id="user_name"></label></li>
@@ -125,35 +125,33 @@
             $("#parent").append("<option value='" + (i+1) + "'>" + parent_category[i] + "</option>");
         }
 
-    };
-    $("#parent").change(function () {
-        var parentid = Number($("#parent").val());
-        var child = {"0": ["子分类"],
-            "1": ["减压", "切东西", "找茬", "答题", "宠物", "益智", "解谜", "音乐节奏", "物理", "休闲", "猜猜看"],
-            "2": ["消除", "宝石", "方块", "泡泡龙", "祖玛", "连连看"],
-            "3": ["3D", "坦克", "射击", "横版", "狙击", "飞行", "空战", "枪战", "动作"],
-            "4": ["拼图", "数学", "智力开发", "识字"],
-            "5": ["ARPG", "三国", "修仙", "养成", "动漫", "即时战斗", "回合制", "武侠", "魔幻", "解谜逃脱"],
-            "6": ["DOTA", "历史", "战争", "战棋", "经营", "策略塔防", "经营模拟", "装扮"],
-            "7": ["摩托", "赛艇", "赛车", "跑酷", "飞机", "模拟驾驶"],
-            "8": ["德州扑克", "斗地主", "桌游", "棋类", "纸牌", "麻将"],
-            "9": ["抢滩登陆", "闯关"],
-            "10": ["其他球类", "台球", "篮球", "网球", "街机", "足球", "桌球", "拳击", "趣味运动", "格斗"],
-            "11": ["RPG", "动作竞技", "卡牌", "策略"]};
-        var select2 = $("#child");
-        var child_length = child[parentid].length;
-        select2.empty();
-        for(var i=0; i < child_length; i++){
-            select2.append("<option value='" + (i+1) + "'>" + child[parentid][i] + "</option>");
-        }
-    });
-    $("#btn_sub").click(function () {
-        console.log($("#parent").find("option:selected").text() + ":" + $("#child").find("option:selected").text());
-    });
-    window.onload = function () {
+        $("#parent").change(function () {
+            var parentid = Number($("#parent").val());
+            var child = {"0": ["子分类"],
+                "1": ["减压", "切东西", "找茬", "答题", "宠物", "益智", "解谜", "音乐节奏", "物理", "休闲", "猜猜看"],
+                "2": ["消除", "宝石", "方块", "泡泡龙", "祖玛", "连连看"],
+                "3": ["3D", "坦克", "射击", "横版", "狙击", "飞行", "空战", "枪战", "动作"],
+                "4": ["拼图", "数学", "智力开发", "识字"],
+                "5": ["ARPG", "三国", "修仙", "养成", "动漫", "即时战斗", "回合制", "武侠", "魔幻", "解谜逃脱"],
+                "6": ["DOTA", "历史", "战争", "战棋", "经营", "策略塔防", "经营模拟", "装扮"],
+                "7": ["摩托", "赛艇", "赛车", "跑酷", "飞机", "模拟驾驶"],
+                "8": ["德州扑克", "斗地主", "桌游", "棋类", "纸牌", "麻将"],
+                "9": ["抢滩登陆", "闯关"],
+                "10": ["其他球类", "台球", "篮球", "网球", "街机", "足球", "桌球", "拳击", "趣味运动", "格斗"],
+                "11": ["RPG", "动作竞技", "卡牌", "策略"]};
+            var select2 = $("#child");
+            var child_length = child[parentid].length;
+            select2.empty();
+            for(var i=0; i < child_length; i++){
+                select2.append("<option value='" + (i+1) + "'>" + child[parentid][i] + "</option>");
+            }
+        });
+        /*("#btn_sub").click(function () {
+            console.log($("#parent").find("option:selected").text() + ":" + $("#child").find("option:selected").text());
+        });*/
 
         $.ajax({
-            url: "/gameinfo",
+            url: "/ios_gameinfo",
             dataType: "json",
             async: false,
             type: "GET",
@@ -203,60 +201,22 @@
         });
 
         $("#app_next").click(function () {
-            var tagsname, tagsvalue;
-            var gender = $("input[name=gender]:checked").val();
-            $("input[name=gender]").removeAttr("checked");
-            var marital = $("input[name=marital]:checked").val();
-            $("input[name=marital]").removeAttr("checked");
-            var havecar = $("input[name=havecar]:checked").val();
-            $("input[name=havecar]").removeAttr("checked");
-            var degree = $("input[name=degree]:checked").val();
-            $("input[name=degree]").removeAttr("checked");
-
-            var age_count = $("input[name=age]").size();
-            var style_count = $("input[name=style]").size();
-            var theme_count = $("input[name=theme]").size();
-            var age = "";
-            var style = "";
-            var theme = "";
-            for(var iage=0; iage < age_count; iage++) {
-                if($("input[name=age]").get(iage).checked) {
-                    age += $("input[name=age]").get(iage).value + ";";
-                }
-            }
-
-            for(var istyle=0; istyle < style_count; istyle++) {
-                if($("input[name=style]").get(istyle).checked) {
-                    style += $("input[name=style]").get(istyle).value + ";";
-                }
-            }
-            for(var itheme=0; itheme < theme_count; itheme++) {
-                if($("input[name=theme]").get(itheme).checked) {
-                    theme += $("input[name=theme]").get(itheme).value + ";";
-                }
-            }
-            $("input[name=age]").attr("checked", false);
-            $("input[name=style]").attr("checked", false);
-            $("input[name=theme]").attr("checked", false);
-            tagsname = "gender,marital,havecar,degree,age,style,theme";
-            tagsvalue = gender + "," + marital + "," + havecar + "," + degree + "," + age + "," + style + "," + theme;
-
+            var classify = $("#parent").find("option:selected").text() + ":" + $("#child").find("option:selected").text();
             $.ajax({
-                url: "/gametags",
+                url: "ios_gametags",
                 dataType: "json",
-                // async : false,
                 data: {
                     pkgname: $("#app_pkgname").text(),
                     appid: $("#app_id").text(),
-                    tagsname: tagsname,
-                    tagsvalue: tagsvalue,
-                    index: index
+                    index: index,
+                    classify: classify
                 },
                 type: "GET",
                 beforeSend: function () {
+                    console.log(data);
 
                 },
-                success: function (data) {
+                success: function () {
                     if (data.msg.toString() == "another ten") {
                         index = 0;
                         apps = data.apps;
@@ -298,9 +258,9 @@
 
                 },
                 error: function (err) {
-                    console.log(err)
+                    console.log(err);
                 }
-            });
+            })
         });
     }
 </script>
