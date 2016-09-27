@@ -10,11 +10,11 @@
 import pymysql
 
 # ----local----
-DB_HOST = "192.168.2.43"
+DB_HOST = "192.168.2.241"
 DB_APPDB = "app_db"
 DB_DB = "my_db"
 DB_USER = "root"
-DB_PWD = "123"
+DB_PWD = "hoolai"
 DB_CHARSET = "utf8"
 
 

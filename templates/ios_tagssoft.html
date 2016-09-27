@@ -116,6 +116,9 @@
 <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
 
 <script defer="defer" type="text/javascript">
+    var index = 0;
+    var apps;
+    var tags;
     window.onload = function() {
         var parent_category = [
             "网上购物", "旅游出行", "金融理财", "视频",
@@ -224,10 +227,10 @@
                 },
                 type: "GET",
                 beforeSend: function () {
-                    console.log(data);
 
                 },
-                success: function () {
+                success: function (data) {
+                    console.log(data);
                     if (data.msg.toString() == "another ten") {
                         index = 0;
                         apps = data.apps;

@@ -116,6 +116,9 @@
 <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
 
 <script defer="defer" type="text/javascript">
+    var index = 0;
+    var apps;
+    var tags;
     window.onload = function() {
         var parent_category = [
                 "休闲游戏", "宝石消除", "动作射击", "儿童游戏", "角色扮演", "经营策略",
@@ -159,6 +162,7 @@
 
             },
             success: function (data) {
+                console.log(data);
                 $("#user_name").text(data.username);
                 if (data.msg.toString() == "has data") {
                     apps = data.apps;
@@ -213,10 +217,9 @@
                 },
                 type: "GET",
                 beforeSend: function () {
-                    console.log(data);
 
                 },
-                success: function () {
+                success: function (data) {
                     if (data.msg.toString() == "another ten") {
                         index = 0;
                         apps = data.apps;

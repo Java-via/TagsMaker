@@ -343,7 +343,7 @@ def ios_gametags():
                     # save tags of this user
                     sql = "INSERT INTO t_user_tags (u_useremail, u_pkgname, u_tagname, u_tagvalue, u_isios) " \
                           "VALUES (%s, %s, %s, %s, 1)"
-                    cur.execute(sql, ())
+                    cur.execute(sql, (useremail, pkgname, "classify", classify))
                     logging.debug("save : %s, %s, %s, %s", useremail, pkgname, "classify", classify)
 
                     # update endid of this user
